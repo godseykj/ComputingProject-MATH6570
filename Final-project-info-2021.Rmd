@@ -1,0 +1,100 @@
+---
+title: "Final Project"
+author: "Maria Rizzo"
+date: "September 21, 2021"
+output:
+  html_document:
+    code_folding: show
+    theme: lumen
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+---
+
+## Description 
+
+Select a paper that includes an empirical study that applies simulation methods of this course. 
+
+Your project is to summarize the main topics of the paper you selected, reproduce the empirical results of this study, verifying that your results are consistent with those published.
+
+Summarize your findings.
+
+## Contents of Final Project Report
+
+* Your group presentation is due at the final exam. Due to the size of the class, we may need to have one or two groups present on the last regular class day, also. 
+
+* Slides can be prepared within RStudio using knitr, or using other software of your choice. Remember to make slides easy to read by the audience. 
+
+* Paper (full report) is due on or before Friday of finals week.
+
+Reproducible research is important in publications. 
+
+Empirical work, whether case studies or simulations, should be reproducible by other researchers.
+
+
+### Submission
+
+This is a group project for groups of 4 members. Each group will submit one report. 
+
+### Format
+
+The template of this document or similar format is recommended. 
+
+The Table of Contents produced makes it easy to navigate through the report. 
+
+(Click on "Outline" to reveal subsections.) Section headings are marked with `##` and subsection headings are marked with `###`.
+
+The code_folding option makes it easy to hide or show all code. 
+
+### Themes  
+
+Any theme other than lumen is fine, provided that it is easy to read.
+
+See for example architect, cayman, and others at
+http://www.datadreaming.org/post/r-markdown-theme-gallery/
+
+
+## Outline
+
+The project report should have three sections, plus references, and possibly an appendix. The results section may need subsections. 
+
+### Section 1: Introduction
+
+This should be an overview of the main ideas of the paper and content of the project. Usually one page or less is sufficient, but can be longer. 
+
+### Section 2: Results 
+
+This is the main body of the report. 
+
+Number your tables and figures and use the numbers to reference them in the written report. If your results do not agree with the publication, discuss possible reasons this may have happened.
+
+Hint:  See `knitr::kable` as an option for tables. 
+
+### Section 3: Summary
+
+Discuss the results and whatever recommendations and/or conclusions are supported by the results.
+
+
+### References
+
+Include a bibliography citing the paper you selected, any packages that you used, and any other references you may have used in the project. For citing packages there is a handy function. For example, to cite the boot package:
+
+```{r}
+citation(package = "boot")
+```
+
+### Appendix
+
+An Appendix is optional, if you think it is appropriate.
+
+If you have long R scripts, it is sometimes easier to source them than
+to put them directly into your report. In that case, your R scripts
+can be put into an Appendix. See https://yihui.name/knitr/demo/child/
+for how to input an external file into your report. That code chunk
+would be shown but not run with the option `eval=FALSE`. 
+
+Your project template has the ability to [Hide] or [Show] all code
+or click to [Hide] or [Show] code for individual chunks, so your 
+code could remain in the body of the report if you prefer. 
+
