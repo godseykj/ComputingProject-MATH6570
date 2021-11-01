@@ -4,6 +4,54 @@ set.seed(1234) # Seed to discuss the tests and distributions with.
 
 # Distributions
 
+# Figure 1
+  # GLD(0.0,1.0,0.75,0.75) at 5% significance level (skewness = 0, kurtosis = 1.89)
+  # GLD(0.0,1.0,0.5,0.5) at 5% significance level (skewness = 0, kurtosis = 2.08)
+  # GLD(0.0,1.0,0.25,0.25) at 5% significance level (skewness = 0, kurtosis = 2.54)
+
+# Table 2
+  # U(0.1) at 5% significance level (skewness = 0, kurtosis = 1.8)
+  # Tukey(0, 1, 1.25, 1.25) at 5% significance level (skewness=0, kurtosis=1.76)
+  # TRUNC(-2, 2) at 5% significance level (skewness=0, kurtosis=2.36)
+
+# This is specifically looking at power comparisons of six short tailed tests.
+# Tukey is used interchangeably with GLD in the text. 
+# The truncated normal distribution is denoted as TruncN(a, b)
+
+# Figure 2
+  # GLD(0.0,1.0,−0.10,−0.10) at 5% significance level (skewness = 0,kurtosis = 6.78)
+  # ScConN(0.05,3) at 5% significance level (skewness = 0, kurtosis = 7.65)
+  # GLD(0.0,1.0,−0.15,−0.15) at 5% significance level (skewness = 0, kurtosis = 10.36)
+
+# Table 3
+  # t(15) at 5% significance level (skewness = 0,kurtosis = 3.55)
+  # Logistic at 5% significance level (skewness = 0,kurtosis = 4.2)
+  # Laplace at 5% significance level (skewness = 0,kurtosis = 6.0)
+
+# These are 6 of the 8 long tailed tests in the paper. 
+# ScConN stands for Scale Contaminated Normal Distribution. Need to find a reference for this. 
+    # The scale-contaminated normal distribution, denoted by ScConN(p, b) is a mixture of two normal distribution 
+    # with probability p from a normal distribution N(0, b2) and probability 1 − p from N(0, 1).
+
+
+# Figure 3
+  # CHI(4df) at 5% significance level (skewness = 1.41, kurtosis = 6.00)
+  # BETA(2,1) at 5% significance level. (skewness = −0.57, kurtosis = 2.40).
+
+# Table 4
+  # Weibull(3, 1) at 5% significance level. (skewness = 0.17, kurtosis = 2.73).
+  # Lognormal at 5% significance level. (skewness = 1.07, kurtosis = 5.10).
+  # LoConN(0.2,3) at 5% significance level. (skewness = 0.68, kurtosis = 3.09).
+
+# These are for 5 of the 10 asymmetric distributions discussed in the text. 
+# LoConN is the location contaminated normal distribution.
+  # LoConN(p, a) denotes the distribution of a random variable that is sampled with probability p from a normal   
+  # distribution with mean a and variance 1 and with probability 1 − p from a standard normal distribution
+
+
+# We need to determine the best way to generate random samples for GLD, ScConN, LoConN, Trunc, and Laplace distributions. 
+# I believe the rest are in some r packages. We could look for other packages that can provide random samples of the above. 
+# I'm not sure what to do with the skewness and kurtosis values, should we measure these for each dist. and show that they match?
 
 # Normality Tests
 
@@ -11,7 +59,7 @@ data <- rnorm(1000, 0, 1) # Generated Normal data to apply the tests on.
 
 # Note About Theory:
 # Check the theory on each of these to double check that they match. The documentation for 
-# the Jarque Bera and D'Agostino Pearson tests are awful, and there is no overlapping sources
+# the Jarque Bera and D'Agostino Pearson test lack any theory, and there is no overlapping sources
 # with the papers. 
 
 ############################################
