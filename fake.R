@@ -1,18 +1,24 @@
 # Test file to make sure I could commit. 
 
 set.seed(1234) # Seed to discuss the tests and distributions with. 
-
+n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 15 Sample sizes used in paper. 
 # Distributions
 
 # Figure 1
   # GLD(0.0,1.0,0.75,0.75) at 5% significance level (skewness = 0, kurtosis = 1.89)
+    # Generate runiform(n), set each lambda, generate x from equation on top of page 12
   # GLD(0.0,1.0,0.5,0.5) at 5% significance level (skewness = 0, kurtosis = 2.08)
+    # Generate runiform(n), set each lambda, generate x from equation on top of page 12
   # GLD(0.0,1.0,0.25,0.25) at 5% significance level (skewness = 0, kurtosis = 2.54)
+    # Generate runiform(n), set each lambda, generate x from equation on top of page 12
 
 # Table 2
   # U(0.1) at 5% significance level (skewness = 0, kurtosis = 1.8)
+    # Can use runiform(n)
   # Tukey(0, 1, 1.25, 1.25) at 5% significance level (skewness=0, kurtosis=1.76)
+    # Generate runiform(n), set each lambda, generate x from equation on top of page 12
   # TRUNC(-2, 2) at 5% significance level (skewness=0, kurtosis=2.36)
+    # Can use rtruncnorm(n, a, b, mean, sd) from https://cran.r-project.org/web/packages/truncnorm/truncnorm.pdf
 
 # This is specifically looking at power comparisons of six short tailed tests.
 # Tukey is used interchangeably with GLD in the text. 
@@ -20,30 +26,43 @@ set.seed(1234) # Seed to discuss the tests and distributions with.
 
 # Figure 2
   # GLD(0.0,1.0,−0.10,−0.10) at 5% significance level (skewness = 0,kurtosis = 6.78)
+    # Generate runiform(n), set each lambda, generate x from equation on top of page 12
   # ScConN(0.05,3) at 5% significance level (skewness = 0, kurtosis = 7.65)
+    # Can use p*rnorm(n, 0, b)+(1-p)*rnorm(n, 0, b)
   # GLD(0.0,1.0,−0.15,−0.15) at 5% significance level (skewness = 0, kurtosis = 10.36)
+    # Generate runiform(n), set each lambda, generate x from equation on top of page 12
 
 # Table 3
   # t(15) at 5% significance level (skewness = 0,kurtosis = 3.55)
+    # Can use rt()
   # Logistic at 5% significance level (skewness = 0,kurtosis = 4.2)
+    # Can use rlogist()
   # Laplace at 5% significance level (skewness = 0,kurtosis = 6.0)
+    # Can use rlaplace() from https://search.r-project.org/CRAN/refmans/VGAM/html/laplaceUC.html
 
 # These are 6 of the 8 long tailed tests in the paper. 
+
 # ScConN stands for Scale Contaminated Normal Distribution. Need to find a reference for this. 
     # The scale-contaminated normal distribution, denoted by ScConN(p, b) is a mixture of two normal distribution 
-    # with probability p from a normal distribution N(0, b2) and probability 1 − p from N(0, 1).
+    # with probability p from a normal distribution N(0, b^2) and probability 1 − p from N(0, 1).
 
 
 # Figure 3
   # CHI(4df) at 5% significance level (skewness = 1.41, kurtosis = 6.00)
+    # Can use rchisq()
   # BETA(2,1) at 5% significance level. (skewness = −0.57, kurtosis = 2.40).
+    # Can use rbeta()
 
 # Table 4
-  # Weibull(3, 1) at 5% significance level. (skewness = 0.17, kurtosis = 2.73).
+  # Weibull(3, 1) at 5% significance level. (skewness = 0.17, kurtosis = 2.73). 
+    # Can use rweibull()
   # Lognormal at 5% significance level. (skewness = 1.07, kurtosis = 5.10).
+    # Can use rlnorm()
   # LoConN(0.2,3) at 5% significance level. (skewness = 0.68, kurtosis = 3.09).
+    # I believe we can use p*rnorm(n, a, 1)+(1-p)rnorm*(n, a, 1)
 
 # These are for 5 of the 10 asymmetric distributions discussed in the text. 
+
 # LoConN is the location contaminated normal distribution.
   # LoConN(p, a) denotes the distribution of a random variable that is sampled with probability p from a normal   
   # distribution with mean a and variance 1 and with probability 1 − p from a standard normal distribution
