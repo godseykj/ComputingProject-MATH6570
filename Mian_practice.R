@@ -1,1 +1,1 @@
-head(iris)
+head(chickwts)
