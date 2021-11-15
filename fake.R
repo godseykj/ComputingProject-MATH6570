@@ -28,7 +28,7 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
   # GLD(0.0,1.0,−0.10,−0.10) at 5% significance level (skewness = 0,kurtosis = 6.78)
     # Generate runiform(n), set each lambda, generate x from equation on top of page 12
   # ScConN(0.05,3) at 5% significance level (skewness = 0, kurtosis = 7.65)
-    # Can use p*rnorm(n, 0, b)+(1-p)*rnorm(n, 0, b)
+    # Can use p*rnorm(n, 0, b)+(1-p)*rnorm(n, 0, 1)
   # GLD(0.0,1.0,−0.15,−0.15) at 5% significance level (skewness = 0, kurtosis = 10.36)
     # Generate runiform(n), set each lambda, generate x from equation on top of page 12
 
@@ -59,7 +59,7 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
   # Lognormal at 5% significance level. (skewness = 1.07, kurtosis = 5.10).
     # Can use rlnorm()
   # LoConN(0.2,3) at 5% significance level. (skewness = 0.68, kurtosis = 3.09).
-    # I believe we can use p*rnorm(n, a, 1)+(1-p)rnorm*(n, a, 1)
+    # I believe we can use p*rnorm(n, a, 1)+(1-p)rnorm*(n, 0, 1)
 
 # These are for 5 of the 10 asymmetric distributions discussed in the text. 
 
@@ -75,6 +75,7 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
 # Normality Tests
 
 data <- rnorm(1000, 0, 1) # Generated Normal data to apply the tests on.
+    ## Why 1000 and why standard normal
 
 # Note About Theory:
 # Check the theory on each of these to double check that they match. The documentation for 
