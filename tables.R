@@ -2,6 +2,7 @@
 #Uniform
 filename <- "table2-uniform.csv"
 sim <- paste("UNIF(0,1)")
+<<<<<<< HEAD
 uniformsw <- function(n, alpha){
   k <- numeric()
   r <- numeric()
@@ -26,3 +27,12 @@ for (i in 3:15){
   uniformsw(ssizes[i],0.05)
 }
 read.table(filename, header=TRUE)
+=======
+alpha <- 0.05
+k <- numeric()
+for (i in 1:R){
+  x <- runif(n, 0, 1)
+  SW <- shapiro.test(data)
+  ifelse(SW$p.value <= alpha, k[i] <- 1, k[i]=0)
+}
+>>>>>>> 2397263a21c9b6ad8eb73e1a41794e8b6af29d4e
