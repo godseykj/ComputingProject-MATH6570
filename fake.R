@@ -75,7 +75,7 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
 # Normality Tests
 
 data <- rnorm(1000, 0, 1) # Generated Normal data to apply the tests on.
-    ## Why 1000 and why standard normal
+    ## Why 1000 (shouldn't it be 10,000 (page 7)) and why standard normal
 
 # Note About Theory:
 # Check the theory on each of these to double check that they match. The documentation for 
