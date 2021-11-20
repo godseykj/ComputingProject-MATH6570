@@ -28,12 +28,13 @@ uniformcounts <- function(filename, alpha){
 }
 uniformcounts(uc,0.05)
 uniformpower <- function(x){
-  counts <- read.table(filename, header=TRUE)
+  counts <- read.table(x, header=TRUE)
   library(dplyr)
   head(counts)
   power <- counts %>% 
     group_by(sim, n) %>% 
-    summarize(p = sum(k)/10000)
+    summarize(p = sum(k1)/10000) %>% 
+    filter(n %in% c(10, 20, 30, 50, 100, 300, 500, 1000, 2000))
   head(power)
   filename <- "uniform_power.csv"
   if(file.exists(filename)){
@@ -42,6 +43,8 @@ uniformpower <- function(x){
     write.table(power, file=filename, append=FALSE, row.names=FALSE, col.names=TRUE)
   }
 }
+
+uniformpower("table2-uniform-sw.csv")
 
 #This part works perfect but can I combine this into one function?
 uniformcounts <- function(n, alpha){
@@ -72,8 +75,10 @@ for (i in 1:15){
     #calculate all sample statistics
     #write row to csv
 
-#runtime: 1.23 min
-uniformcounts <- function(alpha){
+#runtime: 1.27 min
+uniformcounts <- function(filename, alpha){
+  sim <- paste("UNIF(0,1)")
+  ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
   k1 <- numeric()
   k2 <- numeric()
   r <- numeric()
@@ -83,11 +88,13 @@ uniformcounts <- function(alpha){
       for (i in (j-999):j){
         x <- runif(ssizes[a], 0, 1)
         SW <- shapiro.test(x)
-        KS <- ks.test(x, pnorm(0,1), alternative="two.sided", exact=TRUE) #not sure about two-sided here
+        #KS <- ks.test(x, pnorm(0,1), alternative="two.sided", exact=TRUE) #not sure about two-sided here
         ifelse(SW$p.value <= alpha, k1[i] <- 1, k1[i]<-0)
-        ifelse(KS$p.value <= 1-alpha, k2[i] <- 1, k2[i]<-0) #using 1-alpha because of the blurb about critical values in simulation methodology (??)
+        #ifelse(KS$p.value <= 1-alpha, k2[i] <- 1, k2[i]<-0) #using 1-alpha because of the blurb about critical values in simulation methodology (??)
+        CVM <- cvm.test(x)
+        ifelse(CVM$p.value >= 1 - alpha, k2[i] <- 1, k2[i] <- 0)
       }
-      dat <- data.frame(sim=sim, n=ssizes[a], r=j - (j-999) + 1, k1=sum(k1[(j-999):j]),k2=sum(k2[(j-999):j]))
+      dat <- data.frame(sim=sim, n=ssizes[a], r=j - (j-999) + 1, SW=sum(k1[(j-999):j]),CVM=sum(k2[(j-999):j]))
       if(file.exists(filename)){
         write.table(dat, file=filename, append=TRUE, row.names = FALSE, col.names=FALSE)
       } else{
@@ -98,7 +105,7 @@ uniformcounts <- function(alpha){
 }
 
 start_time <- Sys.time()
-uniformcounts(0.05)
+uniformcounts("table2-uniform-sw-cvm",0.05)
 end_time <- Sys.time()
 runtime <- end_time - start_time
 runtime
@@ -112,3 +119,9 @@ for(i in 1:10000) {
 } 
 power <- sum(test)/100000
 power
+
+library(nortest)
+x <- runif(10, 0,1)
+alpha <- 0.05
+CVM <- cvm.test(x)
+CVM$p.value
