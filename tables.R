@@ -112,16 +112,24 @@ runtime
 
 #trying to find the right ks test
 test <- numeric()
+power <- numeric()
 for(i in 1:10000) { 
-  n <- 1000
-  KS <- ks.test(runif(n,0,1), pnorm(0,1), alternative="greater", exact=TRUE)
+  n <- 30
+  dist <- runif(n,0,1)
+  KS <- ks.test(dist, pnorm(0,1), alternative="greater", exact=TRUE)
   ifelse(KS$p.value <= 1-0.05, test[i] <- 1, test[i] <- 0)
 } 
-power <- sum(test)/100000
+power <- sum(test)/10000
 power
 
 library(nortest)
-x <- runif(10, 0,1)
-alpha <- 0.05
-CVM <- cvm.test(x)
-CVM$p.value
+test <- numeric()
+power <- numeric()
+for(i in 1:10000) { 
+  n <- 300
+  dist <- runif(n,0,1)
+  CVM <- cvm.test(dist)
+  ifelse(CVM$p.value <= 1-0.05, test[i] <- 1, test[i] <- 0)
+} 
+power <- sum(test)/10000
+power
