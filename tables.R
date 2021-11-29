@@ -33,10 +33,10 @@ uniformpower <- function(x){
   head(counts)
   power <- counts %>% 
     group_by(sim, n) %>% 
-    summarize(sw = sum(SW)/10000) %>% 
+    summarize(sw = sum(SW)/10000, ks = sum(KS)/10000) %>% 
     filter(n %in% c(10, 20, 30, 50, 100, 300, 500, 1000, 2000))
   head(power)
-  filename <- "uniform_power.csv"
+  filename <- "t2-unif-sw-ks-power.csv"
   if(file.exists(filename)){
     write.table(power, file=filename, append=TRUE, row.names = FALSE, col.names=FALSE)
   } else{
@@ -115,20 +115,21 @@ power
 #critical values
 alpha <- 0.05
 ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
-SW <- numeric(); KS <- numeric()
-SWcrit <- numeric(); KScrit <- numeric()
+#SW <- numeric(); KS <- numeric()
+#SWcrit <- numeric(); KScrit <- numeric()
 for (a in 1:15){
-  SW <- numeric()
+  #SW <- numeric()
+  KS <- numeric()
   for (i in 1:50000){
     x <- rnorm(ssizes[a], 0, 1)
-    SW[i] <- shapiro.test(x)$statistic
-    KS[i] <- ks.test(x, pnorm(0,1), "two.sided")$statistic
+    #SW[i] <- shapiro.test(x)$statistic
+    KS[i] <- ks.test(x, pnorm(0,1), "greater")$statistic
   }
-  SW <- sort(SW); KS <- sort(KS)
-  SWcrit[a] <- quantile(SW, alpha); KScrit[a] <- quantile(KS, 1-alpha)
+  KS <- sort(KS)#SW <- sort(SW); KS <- sort(KS)
+  KScrit[a] <- quantile(KS, 1-alpha)#SWcrit[a] <- quantile(SW, alpha); KScrit[a] <- quantile(KS, 1-alpha)
 }
 
-#runtime: 1.34 min
+#runtime: 56.67 sec
 uniformcounts <- function(filename, alpha){
   sim <- paste("UNIF(0,1)")
   ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
@@ -141,11 +142,9 @@ uniformcounts <- function(filename, alpha){
       for (i in (j-999):j){
         x <- runif(ssizes[a], 0, 1)
         stat <- shapiro.test(x)$statistic
-        stat2 <- ks.test(x, pnorm(0,1), alternative="greater", exact=TRUE)$statistic
+        stat2 <- ks.test(x, pnorm(0.5,1/12), alternative="greater", exact=TRUE)$statistic
         ifelse(stat <= SWcrit[a], k1[i] <- 1, k1[i]<-0)
         ifelse(stat2 >= KScrit[a], k2[i] <- 1, k2[i]<-0) 
-        #CVM <- cvm.test(x)
-        #ifelse(CVM$p.value >= 1 - alpha, k2[i] <- 1, k2[i] <- 0)
       }
       dat <- data.frame(sim=sim, n=ssizes[a], r=j - (j-999) + 1, SW=sum(k1[(j-999):j]),KS=sum(k2[(j-999):j]))
       if(file.exists(filename)){
@@ -158,12 +157,12 @@ uniformcounts <- function(filename, alpha){
 }
 
 start_time <- Sys.time()
-uniformcounts("table2-uniform-sw-ks.csv",0.05)
+uniformcounts("t2-unif-sw-ks.csv",0.05)
 end_time <- Sys.time()
 runtime <- end_time - start_time
 runtime
 
-uniformpower("table2-uniform-sw-ks.csv")
+uniformpower("t2-unif-sw-ks.csv")
 
 test <- numeric()
 power <- numeric()
@@ -177,4 +176,23 @@ for(i in 1:10000) {
 power <- sum(test)/10000
 power
 
+write.table(SWcrit, row.names = FALSE,col.names=c("SW"),file = "critical_values.csv")
 
+#experimenting with KS
+KS <- numeric()
+for(i in 1:50000){
+  x <- rnorm(50,0,1)
+  KS[i] <- ks.test(x,pnorm(0,1),"two.sided")$statistic
+}
+KS <- sort(KS); KScrit <- quantile(KS, 1-0.05)
+k2 <- numeric()
+for (j in 1:10){
+  j <- j*1000
+  for (i in (j-999):j){
+    x <- runif(50, 0, 1)
+    stat2 <- ks.test(x, pnorm(0.5,1/12), alternative="two.sided", exact=TRUE)$statistic
+    ifelse(stat2 >= KScrit, k2[i] <- 1, k2[i]<-0) 
+  }
+}
+power <- sum(k2)/10000
+power
