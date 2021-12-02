@@ -51,6 +51,34 @@ for (a in 1:15){
   LLcrit[a] <- quantile(LL, 1-alpha)
 }
 
+### cvm ###
+library(nortest)
+CVMcrit <- numeric()
+for (a in 1:15){
+  CVM <- numeric()
+  for (i in 1:50000){
+    x <- rnorm(ssizes[a], 0, 1)
+    CVM[i] <- cvm.test(x)$statistic
+  }
+  CVM <- sort(CVM)
+  CVMcrit[a] <- quantile(CVM, 1-alpha)
+}
+
+### anderson darling ###
+library(nortest)
+ADcrit <- numeric()
+for (a in 1:15){
+  AD <- numeric()
+  for (i in 1:50000){
+    x <- rnorm(ssizes[a], 0, 1)
+    AD[i] <- ad.test(x)$statistic
+  }
+  AD <- sort(AD)
+  ADcrit[a] <- quantile(AD, 1-alpha)
+}
+
+### pearson chi squared ###
+#very different strategy described in paper
 
 
 #function to count how many reject null
@@ -119,10 +147,23 @@ for(i in 1:10000) {
 power <- sum(test)/10000
 power
 
+# do not re run
+library(dplyr)
 write.table(SWcrit, row.names = FALSE,col.names=c("SW"),file = "critical_values.csv")
 cvals <- read.table("critical_values.csv", header=TRUE)
 cvals <- cvals %>% 
   mutate(LL = LLcrit)
+write.table(cvals, row.names = FALSE, col.names = TRUE, file = "critical_values.csv")
+cvals <- read.table("critical_values.csv", header=TRUE)
+cvals <- cvals %>% 
+  mutate(CVM = CVMcrit)
+write.table(cvals, row.names = FALSE, col.names = TRUE, file = "critical_values.csv")
+cvals <- read.table("critical_values.csv", header=TRUE)
+cvals <- cvals %>% 
+  mutate(AD = ADcrit)
+write.table(cvals, row.names = FALSE, col.names = TRUE, file = "critical_values.csv")
+cvals <- cvals %>% 
+  mutate(CSQ = CSQcrit)
 write.table(cvals, row.names = FALSE, col.names = TRUE, file = "critical_values.csv")
 
 #experimenting with KS
@@ -145,7 +186,7 @@ for (j in 1:10){
 power <- sum(k2)/10000
 power
 
-#one distribution at a time
+#lillie.test
 uniformcounts <- function(filename, alpha){
   sim <- paste("UNIF(0,1)")
   ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
@@ -184,3 +225,98 @@ uniformpower <- function(file_in, file_out){
 
 uniformcounts("table2-uniform-ll.csv",0.05)
 uniformpower("table2-uniform-ll.csv","t2-uniform-ll-power.csv")
+
+
+#cramer von mises
+uniformcounts <- function(filename, alpha){
+  sim <- paste("UNIF(0,1)")
+  ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
+  k <- numeric()
+  for (a in 1:15){
+    for (j in 1:10){
+      j <- j*1000
+      for (i in (j-999):j){
+        x <- runif(ssizes[a], 0, 1)
+        stat <- cvm.test(x)$statistic
+        ifelse(stat >= CVMcrit[a], k[i] <- 1, k[i]<-0)
+      }
+      dat <- data.frame(sim=sim, n=ssizes[a], r=j - (j-999) + 1, c=sum(k[(j-999):j]))
+      if(file.exists(filename)){
+        write.table(dat, file=filename, append=TRUE, row.names = FALSE, col.names=FALSE)
+      } else{
+        write.table(dat, file=filename, append=FALSE, row.names=FALSE, col.names=TRUE)
+      }
+    }
+  }
+}
+
+uniformpower <- function(file_in, file_out){
+  counts <- read.table(file_in, header=TRUE)
+  library(dplyr)
+  power <- counts %>% 
+    group_by(sim, n) %>% 
+    summarize(CVM = sum(c)/10000) %>%  #ks = sum(KS)/10000) %>% 
+    filter(n %in% c(10, 20, 30, 50, 100, 300, 500, 1000, 2000))
+  if(file.exists(file_out)){
+    write.table(power, file=file_out, append=TRUE, row.names = FALSE, col.names=FALSE)
+  } else{
+    write.table(power, file=file_out, append=FALSE, row.names=FALSE, col.names=TRUE)
+  }
+}
+
+uniformcounts("table2-uniform-cvm.csv",0.05)
+uniformpower("table2-uniform-cvm.csv","t2-uniform-cvm-power.csv")
+
+
+#anderson darling
+uniformcounts <- function(filename, alpha){
+  sim <- paste("UNIF(0,1)")
+  ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
+  k <- numeric()
+  for (a in 1:15){
+    for (j in 1:10){
+      j <- j*1000
+      for (i in (j-999):j){
+        x <- runif(ssizes[a], 0, 1)
+        stat <- ad.test(x)$statistic
+        ifelse(stat >= ADcrit[a], k[i] <- 1, k[i]<-0)
+      }
+      dat <- data.frame(sim=sim, n=ssizes[a], r=j - (j-999) + 1, c=sum(k[(j-999):j]))
+      if(file.exists(filename)){
+        write.table(dat, file=filename, append=TRUE, row.names = FALSE, col.names=FALSE)
+      } else{
+        write.table(dat, file=filename, append=FALSE, row.names=FALSE, col.names=TRUE)
+      }
+    }
+  }
+}
+
+uniformpower <- function(file_in, file_out){
+  counts <- read.table(file_in, header=TRUE)
+  library(dplyr)
+  power <- counts %>% 
+    group_by(sim, n) %>% 
+    summarize(AD = sum(c)/10000) %>%  #ks = sum(KS)/10000) %>% 
+    filter(n %in% c(10, 20, 30, 50, 100, 300, 500, 1000, 2000))
+  if(file.exists(file_out)){
+    write.table(power, file=file_out, append=TRUE, row.names = FALSE, col.names=FALSE)
+  } else{
+    write.table(power, file=file_out, append=FALSE, row.names=FALSE, col.names=TRUE)
+  }
+}
+
+uniformcounts("table2-uniform-ad.csv",0.05)
+uniformpower("table2-uniform-ad.csv","t2-uniform-ad-power.csv")
+
+#combine the tests into one table
+swpower <- read.table("Table2/t2-uniform-sw-power.csv", header = TRUE)
+n <- swpower[,2]
+swpower <- swpower[,3]
+llpower <- read.table("Table2/t2-uniform-ll-power.csv", header = TRUE)
+llpower <- llpower[,3]
+adpower <- read.table("Table2/t2-uniform-ad-power.csv", header = TRUE)
+adpower <- adpower[,3]
+cvmpower <- read.table("Table2/t2-uniform-cvm-power.csv", header = TRUE)
+cvmpower <- cvmpower[,3]
+unifdata <- data.frame(sim=paste("UNIF(0,1)"), SW = swpower, LL = llpower, AD = adpower, CVM = cvmpower)
+write.table(unifdata, file = "Table2/t2-uniform.csv", row.names=FALSE, col.names=TRUE)
