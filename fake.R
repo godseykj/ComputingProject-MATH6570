@@ -12,6 +12,13 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
   # GLD(0.0,1.0,0.25,0.25) at 5% significance level (skewness = 0, kurtosis = 2.54)
     # Generate runiform(n), set each lambda, generate x from equation on top of page 12
 
+u <- runif(n)
+lam1 = 0 
+lam2 = 1
+lam3 = 0.75
+lam4 = 0.75
+GLDdist = lam1 + u^lam3-(1-u)^lam4/lam2
+
 # Table 2
   # U(0.1) at 5% significance level (skewness = 0, kurtosis = 1.8)
     # Can use runiform(n)
