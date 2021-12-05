@@ -252,6 +252,7 @@ jbtest <- rjb.test(data)
 
 library(fBasics)
 DPtest <- dagotest(data)
+#dp@test$statistic[1]
 
 # Internally it uses below functions: .omnibus.test,.skewness.test, .kurtosis.test
 # Function of Our interest: omnibus.test
