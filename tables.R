@@ -169,18 +169,19 @@ write.table(cvals, row.names = FALSE, col.names = TRUE, file = "critical_values.
 #experimenting with KS
 KS <- numeric()
 for(i in 1:50000){
-  x <- rnorm(300,0,1)
-  KS[i] <- ks.test(x,pnorm(0,1),"greater")$statistic
+  x <- rnorm(50,0,1)
+  KS[i] <- ks.test(x,"pnorm")$statistic
 }
 KS <- sort(KS); KScrit <- quantile(KS, 1-0.05)
 k2 <- numeric()
 for (j in 1:10){
   j <- j*1000
   for (i in (j-999):j){
-    x <- runif(300, 0, 1)
-    #x <- (x-0.5)/sqrt(1/12)
-    stat2 <- ks.test(x, pnorm(0.5,sqrt(1/12)), alternative="two.sided", exact=TRUE)$statistic
-    ifelse(stat2 >= KScrit | stat2 <= -KScrit, k2[i] <- 1, k2[i]<-0) 
+    x <- runif(50, 0, 1)
+    x <- (x-0.5)/sqrt(1/12)
+    stat2 <- ks.test(x,"pnorm")$statistic
+    #stat2 <- ks.test(x, y)$statistic
+    ifelse(stat2 >= KScrit, k2[i] <- 1, k2[i]<-0) 
   }
 }
 power <- sum(k2)/10000
