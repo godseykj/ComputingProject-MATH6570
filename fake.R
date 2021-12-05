@@ -1,5 +1,29 @@
 # Test file to make sure I could commit. 
 
+## SW, SF and RJ are left-tailed test
+# the critical values are the 100(α)th percentiles of the empirical distributions of these test statistics.
+
+#The critical values for AD, KS, LL, CVM, DP and JB tests are the 100(1 − α)th percentiles of the
+#empirical distribution of the respective test statistics. 
+
+#The SK and KU are two-tailed tests so the critical values are the 100(α/2)th and 100(1 − α/2)th percentiles of the empirical
+#distribution of the test statistics.
+
+#The alternative distributions:
+
+## 6 symmetric short-tailed distributions:
+#1. (U(0,1), #2. GLD(0,1,0.25,0.25), #3. GLD(0,1,0.5,0.5), #4. GLD(0,1,0.75,0.75),
+#5.GLD(0,1,1.25,1.25) ,#6.Trunc(−2,2).
+
+## 8 symmetric long-tailed distributions:
+#1.Laplace, #2.logistic, #3. GLD(0,1,−0.10,−0.10), #4.GLD(0,1,−0.15,−0.15)
+#5.t(10), #6.t(15), #7.ScConN(0.2,9) #8.ScConN(0.05,9)
+
+# 10 asymmetric distributions:
+#1.gamma(4,5), #2.Beta(2,1), #3.Beta(3,2), #4.CSQ(4), #5.CSQ(10), 
+#6.CSQ(20), #7.Weibull(3,1), #8.Lognormal, #9.LoConN(0.2,3), #10.LoConN(0.05,3).
+
+
 set.seed(1234) # Seed to discuss the tests and distributions with. 
 n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 15 Sample sizes used in paper. 
 # Distributions
