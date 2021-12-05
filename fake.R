@@ -251,10 +251,10 @@ jbtest <- rjb.test(data)
 # https://rdrr.io/cran/fBasics/src/R/test-normalityTest.R
 
 library(fBasics)
-DPtest <- dagotest(data)
+DPtest <- dagoTest(data)
 
 # Internally it uses below functions: .omnibus.test,.skewness.test, .kurtosis.test
-# Function of Our interest: omnibus.test
+# Function of Our interest: 
 # ITs statistic: (statistic = omni,method = "D'Agostino Omnibus Normality Test", p.value = pomni, data.name = DNAME)
 
 # Dptest$pvalue = c(test$p.value, skew$p.value, kurt$p.value) 
