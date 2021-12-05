@@ -91,7 +91,8 @@ data <- rnorm(1000, 0, 1) # Generated Normal data to apply the tests on.
 
 ############################################
 
-# Shapiro Wilks Test - Library: stats
+## Test based on Regression and Correlation
+# Shapiro Wilk Test - Library: stats
 # Link: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html
 # R documentation referencing the same source material as our journal. 
 # Sample size for this test must be between 3 and 5000. 
@@ -106,6 +107,7 @@ SW <- shapiro.test(data)
 
 ############################################
 
+## Empirical Distribution Test
 # Kolmogorov Smirnov Test - Library: stats
 # Link: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ks.test.html
 # I cannot find whether they used the two-sided, right sided, or left sided version of the test. 
@@ -121,6 +123,7 @@ KS <- ks.test(data, pnorm(0,1), alternative="two.sided", exact=TRUE)
 
 ############################################
 
+## Empirical Distribution Test
 # Lilliefors Test - Library: nortest
 # Link: https://www.rdocumentation.org/packages/nortest/versions/1.0-4/topics/lillie.test
 # Theory appears to match. 
@@ -135,6 +138,7 @@ LF <- lillie.test(data)
 
 ############################################
 
+## Empirical Distribution Test
 # Cramer Von Mises Test - Library: nortest
 # Link: https://www.rdocumentation.org/packages/nortest/versions/1.0-4/topics/cvm.test
 
@@ -147,6 +151,7 @@ CVM <- cvm.test(data)
 
 ############################################
 
+## Empirical Distribution Test
 # Anderson Darling Test - Library: nortest
 # Link: https://www.rdocumentation.org/packages/nortest/versions/1.0-4/topics/ad.test
 
@@ -178,6 +183,7 @@ CSQ <- pearson.test(data)
 
 ############################################
 
+## Moments Test
 # Jarque-Bera Test
 
 # https://search.r-project.org/CRAN/refmans/DescTools/html/JarqueBeraTest.html
@@ -214,6 +220,7 @@ jbtest <- rjb.test(data)
 
 ############################################
 
+## Moments Test
 # D'Agostino Pearson Test
 
 # https://www.rdocumentation.org/packages/fBasics/versions/3011.87/topics/NormalityTests
