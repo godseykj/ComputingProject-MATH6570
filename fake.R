@@ -180,22 +180,55 @@ CSQ <- pearson.test(data)
 
 # Jarque-Bera Test
 
-# We have a couple options, I'm not sure which is best in this case. 
-
 # https://search.r-project.org/CRAN/refmans/DescTools/html/JarqueBeraTest.html
-# https://www.rdocumentation.org/packages/tsoutliers/versions/0.3/topics/jarque.bera.test
-# https://search.r-project.org/CRAN/refmans/moments/html/jarque.test.html
-# https://rdrr.io/cran/tseries/man/jarque.bera.test.html
-# https://www.rdocumentation.org/packages/fBasics/versions/3011.87/topics/NormalityTests
+# https://rdrr.io/cran/lawstat/man/rjb.test.html
+
+# We can use either one of them
+
+library(DescTools) # it is a combination of tseries and lawtest
+jbtest <- JarqueBeraTest(data)
+
+#function (x, robust = TRUE, method = c("chisq", "mc"), N = 0, na.rm = FALSE) 
+# method should be "chisq" and robust= TRUE
+
+# jbtest$statistic: value of the test statistic
+# jbtest$parameter: degree of freedom
+# jbtest$p.value: p-value of the test
+# jbtest$method: type of test was performed.
+# jbtest$data.name: a character string giving the name of the data.
+# jbtest$class: htest
+
+
+library(lawstat)
+jbtest <- rjb.test(data)
+
+# function (x, option = c("RJB", "JB"), crit.values = c("chisq.approximation", "empirical"), N = 0) 
+
+# jbtest$statistic: value of the test statistic
+# jbtest$parameter: degree of freedom
+# jbtest$p.value: p-value of the test
+# jbtest$method: type of test was performed.
+# jbtest$data.name: a character string giving the name of the data.
+# jbtest$class: htest
+
 
 ############################################
 
 # D'Agostino Pearson Test
 
-# We have a couple options, I'm not sure which is best in this case. 
-
 # https://www.rdocumentation.org/packages/fBasics/versions/3011.87/topics/NormalityTests
-# https://rdrr.io/bioc/globalSeq/man/omnibus.html
-# https://rdrr.io/cran/PoweR/man/stat0006.DAgostinoPearson.html
+# https://rdrr.io/cran/fBasics/src/R/test-normalityTest.R
+
+library(fBasics)
+DPtest <- dagotest(data)
+
+# Internally it uses below functions: .omnibus.test,.skewness.test, .kurtosis.test
+# Function of Our interest: omnibus.test
+# ITs statistic: (statistic = omni,method = "D'Agostino Omnibus Normality Test", p.value = pomni, data.name = DNAME)
+
+# Dptest$pvalue = c(test$p.value, skew$p.value, kurt$p.value) 
+# Consider 1st p-value as it is for DP Omnibus test
+# Dptest$statistic = c(test$statistic, skew$statistic, kurt$statistic) #receive o/p as a vector 
+# need to consider 1st statistic as it is for DP Omnibus test
 
 
