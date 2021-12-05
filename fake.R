@@ -252,6 +252,7 @@ jbtest <- rjb.test(data)
 
 library(fBasics)
 DPtest <- dagoTest(data)
+#DPtest$statistic[1]
 
 # Internally it uses below functions: .omnibus.test,.skewness.test, .kurtosis.test
 # Function of Our interest: 
@@ -259,7 +260,8 @@ DPtest <- dagoTest(data)
 
 # Dptest$pvalue = c(test$p.value, skew$p.value, kurt$p.value) 
 # Consider 1st p-value as it is for DP Omnibus test
+#DPtest$pvalue[1]
 # Dptest$statistic = c(test$statistic, skew$statistic, kurt$statistic) #receive o/p as a vector 
 # need to consider 1st statistic as it is for DP Omnibus test
-
+#DPtest$statistic[1]
 
