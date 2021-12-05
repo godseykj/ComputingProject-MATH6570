@@ -1,5 +1,29 @@
 # Test file to make sure I could commit. 
 
+## SW, SF and RJ are left-tailed test
+# the critical values are the 100(α)th percentiles of the empirical distributions of these test statistics.
+
+#The critical values for AD, KS, LL, CVM, DP and JB tests are the 100(1 − α)th percentiles of the
+#empirical distribution of the respective test statistics. 
+
+#The SK and KU are two-tailed tests so the critical values are the 100(α/2)th and 100(1 − α/2)th percentiles of the empirical
+#distribution of the test statistics.
+
+#The alternative distributions:
+
+## 6 symmetric short-tailed distributions:
+#1. (U(0,1), #2. GLD(0,1,0.25,0.25), #3. GLD(0,1,0.5,0.5), #4. GLD(0,1,0.75,0.75),
+#5.GLD(0,1,1.25,1.25) ,#6.Trunc(−2,2).
+
+## 8 symmetric long-tailed distributions:
+#1.Laplace, #2.logistic, #3. GLD(0,1,−0.10,−0.10), #4.GLD(0,1,−0.15,−0.15)
+#5.t(10), #6.t(15), #7.ScConN(0.2,9) #8.ScConN(0.05,9)
+
+# 10 asymmetric distributions:
+#1.gamma(4,5), #2.Beta(2,1), #3.Beta(3,2), #4.CSQ(4), #5.CSQ(10), 
+#6.CSQ(20), #7.Weibull(3,1), #8.Lognormal, #9.LoConN(0.2,3), #10.LoConN(0.05,3).
+
+
 set.seed(1234) # Seed to discuss the tests and distributions with. 
 n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 15 Sample sizes used in paper. 
 # Distributions
@@ -91,7 +115,8 @@ data <- rnorm(1000, 0, 1) # Generated Normal data to apply the tests on.
 
 ############################################
 
-# Shapiro Wilks Test - Library: stats
+## Test based on Regression and Correlation
+# Shapiro Wilk Test - Library: stats
 # Link: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html
 # R documentation referencing the same source material as our journal. 
 # Sample size for this test must be between 3 and 5000. 
@@ -106,6 +131,7 @@ SW <- shapiro.test(data)
 
 ############################################
 
+## Empirical Distribution Test
 # Kolmogorov Smirnov Test - Library: stats
 # Link: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ks.test.html
 # I cannot find whether they used the two-sided, right sided, or left sided version of the test. 
@@ -121,6 +147,7 @@ KS <- ks.test(data, pnorm(0,1), alternative="two.sided", exact=TRUE)
 
 ############################################
 
+## Empirical Distribution Test
 # Lilliefors Test - Library: nortest
 # Link: https://www.rdocumentation.org/packages/nortest/versions/1.0-4/topics/lillie.test
 # Theory appears to match. 
@@ -135,6 +162,7 @@ LF <- lillie.test(data)
 
 ############################################
 
+## Empirical Distribution Test
 # Cramer Von Mises Test - Library: nortest
 # Link: https://www.rdocumentation.org/packages/nortest/versions/1.0-4/topics/cvm.test
 
@@ -147,6 +175,7 @@ CVM <- cvm.test(data)
 
 ############################################
 
+## Empirical Distribution Test
 # Anderson Darling Test - Library: nortest
 # Link: https://www.rdocumentation.org/packages/nortest/versions/1.0-4/topics/ad.test
 
@@ -178,24 +207,59 @@ CSQ <- pearson.test(data)
 
 ############################################
 
+## Moments Test
 # Jarque-Bera Test
 
-# We have a couple options, I'm not sure which is best in this case. 
-
 # https://search.r-project.org/CRAN/refmans/DescTools/html/JarqueBeraTest.html
-# https://www.rdocumentation.org/packages/tsoutliers/versions/0.3/topics/jarque.bera.test
-# https://search.r-project.org/CRAN/refmans/moments/html/jarque.test.html
-# https://rdrr.io/cran/tseries/man/jarque.bera.test.html
-# https://www.rdocumentation.org/packages/fBasics/versions/3011.87/topics/NormalityTests
+# https://rdrr.io/cran/lawstat/man/rjb.test.html
+
+# We can use either one of them
+
+library(DescTools) # it is a combination of tseries and lawtest
+jbtest <- JarqueBeraTest(data)
+
+#function (x, robust = TRUE, method = c("chisq", "mc"), N = 0, na.rm = FALSE) 
+# method should be "chisq" and robust= TRUE
+
+# jbtest$statistic: value of the test statistic
+# jbtest$parameter: degree of freedom
+# jbtest$p.value: p-value of the test
+# jbtest$method: type of test was performed.
+# jbtest$data.name: a character string giving the name of the data.
+# jbtest$class: htest
+
+
+library(lawstat)
+jbtest <- rjb.test(data)
+
+# function (x, option = c("RJB", "JB"), crit.values = c("chisq.approximation", "empirical"), N = 0) 
+
+# jbtest$statistic: value of the test statistic
+# jbtest$parameter: degree of freedom
+# jbtest$p.value: p-value of the test
+# jbtest$method: type of test was performed.
+# jbtest$data.name: a character string giving the name of the data.
+# jbtest$class: htest
+
 
 ############################################
 
+## Moments Test
 # D'Agostino Pearson Test
 
-# We have a couple options, I'm not sure which is best in this case. 
-
 # https://www.rdocumentation.org/packages/fBasics/versions/3011.87/topics/NormalityTests
-# https://rdrr.io/bioc/globalSeq/man/omnibus.html
-# https://rdrr.io/cran/PoweR/man/stat0006.DAgostinoPearson.html
+# https://rdrr.io/cran/fBasics/src/R/test-normalityTest.R
+
+library(fBasics)
+DPtest <- dagotest(data)
+
+# Internally it uses below functions: .omnibus.test,.skewness.test, .kurtosis.test
+# Function of Our interest: omnibus.test
+# ITs statistic: (statistic = omni,method = "D'Agostino Omnibus Normality Test", p.value = pomni, data.name = DNAME)
+
+# Dptest$pvalue = c(test$p.value, skew$p.value, kurt$p.value) 
+# Consider 1st p-value as it is for DP Omnibus test
+# Dptest$statistic = c(test$statistic, skew$statistic, kurt$statistic) #receive o/p as a vector 
+# need to consider 1st statistic as it is for DP Omnibus test
 
 
