@@ -43,6 +43,13 @@ lam3 = 0.75
 lam4 = 0.75
 GLDdist = lam1 + u^lam3-(1-u)^lam4/lam2
 
+rGLD <- function(n, lam1, lam2, lam3, lam4){
+  u <- runif(n)
+  GLDdist <- lam1 + u^lam1 + u^lam3-(1-u)^lam4/lam2
+}
+
+x <- rGLD(30, 0, 1, 0.75,0.75)
+
 # Table 2
   # U(0.1) at 5% significance level (skewness = 0, kurtosis = 1.8)
     # Can use runiform(n)
@@ -67,7 +74,7 @@ GLDdist = lam1 + u^lam3-(1-u)^lam4/lam2
   # t(15) at 5% significance level (skewness = 0,kurtosis = 3.55)
     # Can use rt()
   # Logistic at 5% significance level (skewness = 0,kurtosis = 4.2)
-    # Can use rlogist()
+    # Can use rlogis()
   # Laplace at 5% significance level (skewness = 0,kurtosis = 6.0)
     # Can use rlaplace() from https://search.r-project.org/CRAN/refmans/VGAM/html/laplaceUC.html
 
@@ -264,5 +271,5 @@ DPtest <- dagoTest(data)
 
 # Dptest$statistic = c(test$statistic, skew$statistic, kurt$statistic) #receive o/p as a vector 
 # need to consider 1st statistic as it is for DP Omnibus test
-#DPtest$statistic[1]
+# DPtest$statistic[1]
 
