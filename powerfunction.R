@@ -71,19 +71,15 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
   Unifpowermatrix <<- cbind(ssizes, powerSW, powerKS, powerLL, powerAD, powerJB, powerCVM)
 }
 
-## Examples of how to use the function
+## Using the function
 
 #t distribution - t(15)
-cvalues <- read.table("critical_values.csv",header=TRUE)
-ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- cvalues[,4]; ADcrit <- cvalues[,5]; JBcrit <- cvalues[,6]; CVMcrit <- cvalues[,7]
 tmean <- 0
 df <- 15
 tvar <- df / (df-2)
 getpower(tmean, tvar, "rt", df)
 
 #logistic  (assuming standard)
-cvalues <- read.table("critical_values.csv",header=TRUE)
-ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- cvalues[,4]; ADcrit <- cvalues[,5]; JBcrit <- cvalues[,6]; CVMcrit <- cvalues[,7]
 logmean <- 0
 logvar <- (pi^2)/3
 logsd <- sqrt(logvar)
@@ -95,3 +91,18 @@ laplacevar <- 2
 laplacesd <- sqrt(laplacevar)
 library(VGAM)
 getpower(laplacemean, laplacevar, "rlaplace")
+
+#weibull(3,1)
+gam <- 3; alpha <- 1
+wmean <- alpha*gamma(1 + (1/gam))
+wvar <- (alpha^2)*gamma(1+(2/gam)) - (alpha*gamma(1 + 1/gam))^2
+getpower(wmean, wvar, "rweibull",gam,alpha)
+#this one is off (KS, LL, JB, CVM), lots of KS warnings
+
+#lognormal (standard)
+getpower(0,1,"rlnorm")
+#lots of cvm warnings: p-value is smaller than 7.37e-10, cannot be computed more accurately
+#very off
+
+#LoConN(0.2,3)
+getpower() #can't use this without the theoretical mean and variance...
