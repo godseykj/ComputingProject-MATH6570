@@ -105,6 +105,13 @@ x <- rGLD(30, 0, 1, 0.75,0.75)
   # LoConN(p, a) denotes the distribution of a random variable that is sampled with probability p from a normal   
   # distribution with mean a and variance 1 and with probability 1 − p from a standard normal distribution
 
+rLoConN <- function(n,p,a){
+  k <- runif(n)
+  k <- ifelse(k <= p, 1, 0)
+  LoConNdist <- k*rnorm(n, mean = a, sd=1) + (1-k)*rnorm(n)
+  LoConNdist
+}
+
 
 # We need to determine the best way to generate random samples for GLD, ScConN, LoConN, Trunc, and Laplace distributions. 
 # I believe the rest are in some r packages. We could look for other packages that can provide random samples of the above. 
