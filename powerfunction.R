@@ -140,3 +140,18 @@ gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
 getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+
+#generalized lambda (figure 2)
+#a - GLD(0,1,-0.1,-0.1)
+lam1 <- 0; lam2 <- 1; lam3 <- -0.10; lam4 <- -0.10
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+
+getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+
+#c - GLD(0,1,-0.15,-0.15)
+lam1 <- 0; lam2 <- 1; lam3 <- -0.15; lam4 <- -0.15
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+
+getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
