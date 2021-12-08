@@ -35,6 +35,7 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
     # Generate runiform(n), set each lambda, generate x from equation on top of page 12
   # GLD(0.0,1.0,0.25,0.25) at 5% significance level (skewness = 0, kurtosis = 2.54)
     # Generate runiform(n), set each lambda, generate x from equation on top of page 12
+    #gld package
 
 u <- runif(n)
 lam1 = 0 

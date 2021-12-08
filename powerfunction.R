@@ -106,3 +106,32 @@ getpower(0,1,"rlnorm")
 
 #LoConN(0.2,3)
 getpower() #can't use this without the theoretical mean and variance...
+
+#generalized lambda (table 2)
+library(gld)
+lam1 <- 0; lam2 <- 1; lam3 <- 1.25; lam4 <- 1.25
+#A <- ((1/(1+lam3)) - (1/(1+lam4)))
+#B <- ((1/(1+2*lam3)) - (1/(1+2*lam4))) - 2*beta(1 + lam3, 1 + lam4)
+#gldmean <- la m1 + (A/lam2)
+#gldvar <- lam1 + ((B - A^2)/(lam2^2))
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+
+getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+
+#generalized lambda (figure 1)
+#a - GLD(0,1,0.75,0.75)
+lam1 <- 0; lam2 <- 1; lam3 <- 0.75; lam4 <- 0.75
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+
+getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+
+#b - GLD(0,1,0.5,0.5)
+lam1 <- 0; lam2 <- 1; lam3 <- 0.5; lam4 <- 0.5
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+
+getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+
+#c - GLD(0,1,0.25,0.25)
