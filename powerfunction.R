@@ -135,3 +135,8 @@ gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 
 #c - GLD(0,1,0.25,0.25)
+lam1 <- 0; lam2 <- 1; lam3 <- 0.25; lam4 <- 0.25
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+
+getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
