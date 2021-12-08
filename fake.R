@@ -246,7 +246,7 @@ jbtest <- JarqueBeraTest(data)
 
 library(lawstat)
 jbtest <- rjb.test(data)
-
+# Use RJB option. Bydefault option 
 # function (x, option = c("RJB", "JB"), crit.values = c("chisq.approximation", "empirical"), N = 0) 
 
 # jbtest$statistic: value of the test statistic
@@ -273,11 +273,11 @@ DPtest <- dagoTest(data)
 # Function of Our interest: 
 # ITs statistic: (statistic = omni,method = "D'Agostino Omnibus Normality Test", p.value = pomni, data.name = DNAME)
 
-# Dptest$pvalue = c(test$p.value, skew$p.value, kurt$p.value) 
+# c(test$p.value, skew$p.value, kurt$p.value) 
 # Consider 1st p-value as it is for DP Omnibus test
-#DPtest$pvalue[1]
+# attr(,"test")$p.value[1]
 
-# Dptest$statistic = c(test$statistic, skew$statistic, kurt$statistic) #receive o/p as a vector 
-# need to consider 1st statistic as it is for DP Omnibus test
-# DPtest$statistic[1]
+# c(test$statistic, skew$statistic, kurt$statistic) #receive o/p as a vector 
+# Consider 1st statistic as it is for DP Omnibus test
+# attr(DPtest,"test")$statistic[1]
 
