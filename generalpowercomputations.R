@@ -29,9 +29,10 @@ for (a in 1:15){
     KS[i] <- ks.test(x, "pnorm")$statistic
     LL[i] <- lillie.test(x)$statistic 
     AD[i] <- ad.test(x)$statistic
-    #DPtest <- dagoTest(x)
-    #DP[i] <- DPtest@test$statistic[1]
-    JB[i] <- rjb.test(x, "JB")$statistic
+    #DP[i]<- attr(dagoTest(x),"test")$statistic[1]
+    #for DP test sample size should be at least 20
+    # This should be Robust JB test
+    JB[i] <- rjb.test(x,option="RJB",crit.values="Chisq.approximation")$statistic
     CVM[i] <- cvm.test(x)$statistic
     #CSQ[i] <- pearson.test(x)$statistic
   }
@@ -85,9 +86,9 @@ for (a in 1:15){
     KSd <- ks.test(distKS, "pnorm")$statistic
     LLd <- lillie.test(dist)$statistic 
     ADd <- ad.test(dist)$statistic
-    #DPtest <- dagoTest(x)
-    #DPd <- DPtest@test$statistic[1]
-    JBd <- rjb.test(dist, "JB")$statistic
+    #DPd[i] <- attr(dagoTest(dist),"test")$statistic[1]
+    # Robust JB test
+    JBd <- rjb.test(x,option="RJB",crit.values="Chisq.approximation")$statistic
     CVMd <- cvm.test(dist)$statistic
     #CSQd <- pearson.test(dist)$statistic
     
