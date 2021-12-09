@@ -3,7 +3,7 @@ library(lawstat)
 library(fBasics)
 library(gld)
 library(VGAM)
-library(truncnorm)
+library(truncnorm::rtrunctnorm)
 
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
   #parameters which are any parameters that the distribution function requires (beyond sample size)
@@ -42,7 +42,7 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
       distsd <- sqrt(distvar)
       distKS <- (dist-distmean)/distsd
       SWd <- shapiro.test(dist)$statistic 
-      KSd <- ks.test(distKS, "Comparisons of various types of normality tests.pdfnorm")$statistic
+      KSd <- ks.test(distKS, "pnorm")$statistic
       LLd <- lillie.test(dist)$statistic 
       ADd <- ad.test(dist)$statistic
       #DPtest <- dagoTest(x)
