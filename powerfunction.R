@@ -1,12 +1,15 @@
 library(nortest)
 library(lawstat)
 library(fBasics)
+library(gld)
+library(VGAM)
+library(truncnorm)
+
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
   #parameters which are any parameters that the distribution function requires (beyond sample size)
+cvalues <- read.table("critical_values.csv",header=TRUE)
+ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- cvalues[,4]; ADcrit <- cvalues[,5]; JBcrit <- cvalues[,6]; CVMcrit <- cvalues[,7]
 getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL, p4=NULL){
-  cvalues <- read.table("critical_values.csv",header=TRUE)
-  ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- cvalues[,4]; ADcrit <- cvalues[,5]; JBcrit <- cvalues[,6]; CVMcrit <- cvalues[,7]
-  
   powerSW <- c()
   powerKS <- c()
   powerLL <- c()
@@ -37,10 +40,9 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
         } else{dist <- as.vector(sapply(n, noquote(dist_function), p1))}
       } else{dist <- as.vector(sapply(n, noquote(dist_function)))}
       distsd <- sqrt(distvar)
-      #distmean <- 0.5
       distKS <- (dist-distmean)/distsd
       SWd <- shapiro.test(dist)$statistic 
-      KSd <- ks.test(distKS, "pnorm")$statistic
+      KSd <- ks.test(distKS, "Comparisons of various types of normality tests.pdfnorm")$statistic
       LLd <- lillie.test(dist)$statistic 
       ADd <- ad.test(dist)$statistic
       #DPtest <- dagoTest(x)
@@ -68,29 +70,48 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
     powerCVM <- c(powerCVM, sum(testCVM)/10000)
     #powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
   }
-  Unifpowermatrix <<- cbind(ssizes, powerSW, powerKS, powerLL, powerAD, powerJB, powerCVM)
+  powermatrix <<- cbind(ssizes, powerSW, powerKS, powerLL, powerAD, powerJB, powerCVM)
 }
 
 ## Using the function
+
+# Table 2 Short Tailed Distributions
+
+# Uniform 
+Uniformpower <- getpower(0, 1, "runif")
+
+# Tukey(0, 1, 1.25, 1.25)
+
+lam1 <- 0; lam2 <- 1; lam3 <- 1.25; lam4 <- 1.25
+gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
+gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+Tukeypower <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+
+# Trunc(-2, 2)
+Truncpower <- getpower(0, 1, "rtruncnorm", -2, 2) # Weird error
+
+
+# Table 3 Long Tailed Distributions
 
 #t distribution - t(15)
 tmean <- 0
 df <- 15
 tvar <- df / (df-2)
-getpower(tmean, tvar, "rt", df)
+Tpower <- getpower(tmean, tvar, "rt", df)
 
-#logistic  (assuming standard)
+#logistic  (Standard)
 logmean <- 0
 logvar <- (pi^2)/3
 logsd <- sqrt(logvar)
-getpower(logmean, logvar, "rlogis")
+Logisticpower <- getpower(logmean, logvar, "rlogis")
 
-#laplace
+#Laplace (Standard)
 laplacemean <- 0
 laplacevar <- 2
 laplacesd <- sqrt(laplacevar)
-library(VGAM)
-getpower(laplacemean, laplacevar, "rlaplace")
+Laplacepower <- getpower(laplacemean, laplacevar, "rlaplace")
+
+# Asymptotic Distributions Table 4
 
 #weibull(3,1)
 gam <- 3; alpha <- 1
@@ -107,51 +128,48 @@ getpower(0,1,"rlnorm")
 #LoConN(0.2,3)
 getpower() #can't use this without the theoretical mean and variance...
 
-#generalized lambda (table 2)
-library(gld)
-lam1 <- 0; lam2 <- 1; lam3 <- 1.25; lam4 <- 1.25
-#A <- ((1/(1+lam3)) - (1/(1+lam4)))
-#B <- ((1/(1+2*lam3)) - (1/(1+2*lam4))) - 2*beta(1 + lam3, 1 + lam4)
-#gldmean <- la m1 + (A/lam2)
-#gldvar <- lam1 + ((B - A^2)/(lam2^2))
-gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
-gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
+# Figure 1
 
-getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
-
-#generalized lambda (figure 1)
 #a - GLD(0,1,0.75,0.75)
 lam1 <- 0; lam2 <- 1; lam3 <- 0.75; lam4 <- 0.75
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
-
-getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+GLD1a <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 
 #b - GLD(0,1,0.5,0.5)
 lam1 <- 0; lam2 <- 1; lam3 <- 0.5; lam4 <- 0.5
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
-getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+GLD1b <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 
 #c - GLD(0,1,0.25,0.25)
 lam1 <- 0; lam2 <- 1; lam3 <- 0.25; lam4 <- 0.25
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
-getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+GLD1c <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 
-#generalized lambda (figure 2)
+# Figure 2 
+
 #a - GLD(0,1,-0.1,-0.1)
 lam1 <- 0; lam2 <- 1; lam3 <- -0.10; lam4 <- -0.10
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
-getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+GLD2a <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+
+# Scale Contanimated Normal
 
 #c - GLD(0,1,-0.15,-0.15)
 lam1 <- 0; lam2 <- 1; lam3 <- -0.15; lam4 <- -0.15
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
-getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+GLD2c <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
+
+# Figure 3
+
+# Chi(4df)
+
+# Beta(2,1)
