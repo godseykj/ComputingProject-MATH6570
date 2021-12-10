@@ -114,3 +114,29 @@ for (a in 1:15){
 Unifpowermatrix <- cbind(ssizes, powerSW, powerLL, powerKS, powerAD, powerJB, powerCVM)
 
 # We can use knitr to output tables as needed 
+
+n=100
+alpha=0.05
+M=floor(4*(2*n^2/1.645^2)^(1/5))
+CSQ <- numeric()
+CSQcrit <- numeric()
+for (i in 1:50000){
+  x <- rnorm(n, 0, 1)
+  CSQ[i] <- pchiTest(x)$statistic
+}
+CSQcrit1 <- quantile(CSQ, 1-alpha)
+CSQcrit2 <- quantile(CSQ, alpha/2)
+
+CSQstat <- numeric()
+testCSQ <- numeric()
+powerCSQ <- c()
+for(i in 1:10000) { 
+  dist <- runif(n, 0, 1)
+  stat1 <- pChiest(dist)$statistic
+  CSQstat[i] <- stat1
+  ifelse(CSQstat[i] >= CSQcrit1, testCSQ[i] <- 1, testCSQ[i] <- 0)
+}
+  powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
+
+
+
