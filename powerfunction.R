@@ -196,5 +196,14 @@ GLD2c <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 # Figure 3
 
 # Chi(4df)
+df <- 4
+chimean <- df
+chivar <- 2*df
+chipower <- getpower(chimean, chivar, "rchisq",df)
 
 # Beta(2,1)
+alpha <- 2
+beta <- 1
+betamean <- alpha / (alpha + beta)
+betavar <- (alpha*beta) / (((alpha+beta)^2)*(alpha+beta+1))
+betapower <- getpower(betamean, betavar, "rbeta",alpha, beta)
