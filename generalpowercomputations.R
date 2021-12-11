@@ -42,7 +42,31 @@ library(fBasics)
   RVAL
 }
 
-.kurtosis.test <-
+.kurtosis.test <-"pearson.test" <-
+function (x, n.classes = ceiling(2 * (n^(2/5))), adjust = TRUE) 
+{
+    DNAME <- deparse(substitute(x))
+    x <- x[complete.cases(x)]
+    n <- length(x)
+    if (adjust) {
+        dfd <- 2
+    }
+    else {
+        dfd <- 0
+    }
+    num <- floor(1 + n.classes * pnorm(x, mean(x), sd(x)))
+    count <- tabulate(num, n.classes)
+    prob <- rep(1/n.classes, n.classes)
+    xpec <- n * prob
+    h <- ((count - xpec)^2)/xpec
+    P <- sum(h)
+    pvalue <- pchisq(P, n.classes - dfd - 1, lower.tail = FALSE)
+    RVAL <- list(statistic = c(P = P), p.value = pvalue, method = "Pearson chi-square normality test", 
+        data.name = DNAME, n.classes = n.classes, df = n.classes - 
+            1 - dfd)
+    class(RVAL) <- "htest"
+    return(RVAL)
+}
   function(x)
   {
     # Internal Function for D'Agostino Normality Test:
@@ -189,6 +213,32 @@ dagotest =
         description = as.character(description) )
   }
 
+pearsontest <-
+  function (x, n.classes = ceiling(2 * (n^(2/5))), adjust = TRUE) 
+  {
+    DNAME <- deparse(substitute(x))
+    x <- x[complete.cases(x)]
+    n <- length(x)
+    if (adjust) {
+      dfd <- 2
+    }
+    else {
+      dfd <- 0
+    }
+    num <- floor(1 + n.classes * pnorm(x, mean(x), sd(x)))
+    count <- tabulate(num, n.classes)
+    prob <- rep(1/n.classes, n.classes)
+    xpec <- n * prob
+    h <- ((count - xpec)^2)/xpec
+    P <- sum(h)
+    pvalue <- pchisq(P, n.classes - dfd - 1, lower.tail = FALSE)
+    RVAL <- list(statistic = c(P = P), p.value = pvalue, method = "Pearson chi-square normality test", 
+                 data.name = DNAME, n.classes = n.classes, df = n.classes - 
+                   1 - dfd)
+    class(RVAL) <- "htest"
+    return(RVAL)
+  }
+
 alpha <- 0.05
 ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
 
@@ -299,29 +349,30 @@ Unifpowermatrix <- cbind(ssizes, powerSW,  powerKS, powerLL, powerAD, powerDP, p
 
 # We can use knitr to output tables as needed
 
-n <- 100
+n <- 10
 alpha <- 0.05
 M <- floor(4*(2*n^2/1.645^2)^(1/5))
 CSQ <- numeric()
 CSQcrit <- numeric()
-for (i in 1:50000){
-  x <- rnorm(n, 0, 1)
-  CSQ[i] <- pearson.test(x, adjust=FALSE)$statistic
+for (c in 1:M){
+  for (i in 1:50000){
+    x <- rnorm(n, 0, 1)
+    CSQ[i] <- pearson.test(x, adjust=FALSE)$statistic
+  }
+  CSQcrit[c] <- quantile(CSQ, 1-alpha)
 }
-CSQcrit <- quantile(CSQ, 1-alpha)
 CSQstat <- numeric()
 testCSQ <- numeric()
 powerCSQ <- c()
 for (c in 1:M){
   for(i in 1:10000) { 
     dist <- runif(n, 0, 1)
-    distsd <- sqrt(1/12)
-    distavg <- 0.5
-    dtsStandard <- (dist-distavg)/distsd 
     stat1 <- pearson.test(dist, n.classes=c, adjust=FALSE)$statistic
     CSQstat[i] <- stat1
-    ifelse(CSQstat[i] >=CSQcrit, testCSQ[i] <- 1, testCSQ[i] <- 0)
+    ifelse(CSQstat[i] >=CSQcrit[c], testCSQ[i] <- 1, testCSQ[i] <- 0)
   }
-  powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
+  powerCSQ[c] <- c(sum(testCSQ)/10000)
 }
 max(powerCSQ)
+
+
