@@ -8,4 +8,7 @@ a_power <- seq(0, 1, 10)
 
 ggplot(a, aes(x=a_ssizes, y=a_power)) + 
   geom_line(aes(y=powerSW), color="purple") +
-  geom_line(aes(y=powerKS), color="red")
+  geom_point(aes(y=powerSW), color="purple") +
+  geom_line(aes(y=powerKS), color="red") + 
+  geom_point(aes(y=powerKS), color="red") 
+  
