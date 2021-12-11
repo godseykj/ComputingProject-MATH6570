@@ -2,7 +2,7 @@ library(nortest)
 library(lawstat)
 library(fBasics)
 
-# Edited source code from dagoTest in nortest. Source:
+# Edited source code from dagoTest in fBasics.
 .skewness.test <- function(x)
 {
   # Internal Function for D'Agostino Normality Test:
@@ -229,7 +229,7 @@ for (a in 1:15){
     LL[i] <- lillie.test(x)$statistic 
     AD[i] <- ad.test(x)$statistic
     DP[i]<- dagotest(x)@test$statistic[1]
-    JB[i] <- rjb.test(x,option="RJB")$statistic
+    JB[i] <- rjb.test(x,option="JB")$statistic
     CVM[i] <- cvm.test(x)$statistic
     CSQ[i] <- pearson.test(x)$statistic
   }
@@ -252,7 +252,7 @@ for (a in 1:15){
   CVMcrit[a] <- quantile(CVM, 1-alpha)
   CSQcrit[a] <- quantile(CSQ, 1-alpha)
 }
-Critvaluematrix <- cbind(ssizes, SWcrit, LLcrit, KScrit, ADcrit, DPcrit, JBcrit, CVMcrit, CSQcrit)
+Critvaluematrix <- cbind(ssizes, SWcrit, KScrit, LLcrit, ADcrit, DPcrit, JBcrit, CVMcrit, CSQcrit)
 
 powerSW <- c()
 powerKS <- c()
@@ -283,8 +283,8 @@ for (a in 1:15){
     KSd <- ks.test(distKS, "pnorm")$statistic
     LLd <- lillie.test(dist)$statistic 
     ADd <- ad.test(dist)$statistic
-    DPd <- attr(dagotest(dist),"test")$statistic[1]
-    JBd <- rjb.test(x,option="RJB",crit.values="Chisq.approximation")$statistic
+    DPd <- dagotest(dist)@test$statistic[1]
+    JBd <- rjb.test(dist,option="JB")$statistic
     CVMd <- cvm.test(dist)$statistic
     #CSQd <- pearson.test(dist)$statistic
     
@@ -306,10 +306,10 @@ for (a in 1:15){
   powerJB <- c(powerJB, sum(testJB)/10000)
   powerCVM <- c(powerCVM, sum(testCVM)/10000)
   #powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
-}
-Unifpowermatrix <- cbind(ssizes, powerSW, powerLL, powerKS, powerAD, powerDP, powerJB, powerCVM)
+  }
+Unifpowermatrix <- cbind(ssizes, powerSW,  powerKS, powerLL, powerAD, powerDP, powerJB, powerCVM)
 
-# We can use knitr to output tables as needed 
+# We can use knitr to output tables as needed
 
 n <- 100
 alpha <- 0.05
@@ -327,6 +327,9 @@ powerCSQ <- c()
 for (c in 1:M){
   for(i in 1:10000) { 
     dist <- runif(n, 0, 1)
+    distsd <- sqrt(1/12)
+    distavg <- 0.5
+    dtsStandard <- (dist-distavg)/distsd 
     stat1 <- pearson.test(dist, n.classes=c, adjust=FALSE)$statistic
     CSQstat[i] <- stat1
     ifelse(CSQstat[i] >=CSQcrit, testCSQ[i] <- 1, testCSQ[i] <- 0)
