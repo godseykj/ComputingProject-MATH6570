@@ -85,6 +85,13 @@ x <- rGLD(30, 0, 1, 0.75,0.75)
     # The scale-contaminated normal distribution, denoted by ScConN(p, b) is a mixture of two normal distribution 
     # with probability p from a normal distribution N(0, b^2) and probability 1 − p from N(0, 1).
 
+rScConN <- function(n,p,b){
+  k <- runif(n)
+  k <- ifelse(k <= p, 1, 0)
+  ScConNdist <- k*rnorm(n, mean = 0, sd=b) + (1-k)*rnorm(n)
+  ScConNdist
+}
+
 
 # Figure 3
   # CHI(4df) at 5% significance level (skewness = 1.41, kurtosis = 6.00)

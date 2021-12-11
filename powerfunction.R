@@ -3,7 +3,7 @@ library(lawstat)
 library(fBasics)
 library(gld)
 library(VGAM)
-library(truncnorm::rtrunctnorm)
+library(truncnorm)
 
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
   #parameters which are any parameters that the distribution function requires (beyond sample size)
@@ -71,6 +71,24 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
     #powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
   }
   powermatrix <<- cbind(ssizes, powerSW, powerKS, powerLL, powerAD, powerJB, powerCVM)
+}
+
+## homemade functions for distributions
+
+#scale contaminated function
+rScConN <- function(n,p,b){
+  k <- runif(n)
+  k <- ifelse(k <= p, 1, 0)
+  ScConNdist <- k*rnorm(n, mean = 0, sd=b) + (1-k)*rnorm(n)
+  ScConNdist
+}
+
+#location contaminated function
+rLoConN <- function(n,p,a){
+  k <- runif(n)
+  k <- ifelse(k <= p, 1, 0)
+  LoConNdist <- k*rnorm(n, mean = a, sd=1) + (1-k)*rnorm(n)
+  LoConNdist
 }
 
 ## Using the function
@@ -159,7 +177,14 @@ gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
 GLD2a <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 
-# Scale Contanimated Normal
+# Scale Contanimated Normal (0.05, 3)
+p <- 0.05
+b <- 3
+meanN1 <- 0; meanN2 <- 0; varN1 <- 0; varN2 <- 1
+meanscn <- p*meanN1 + (1-p)*meanN2
+varscn <- (p^2)*varN1 + ((1-p)^2)*varN2
+SCnom <- getpower(meanscn, varscn, "rScConN", p, b)
+#ks and cvm are wrong
 
 #c - GLD(0,1,-0.15,-0.15)
 lam1 <- 0; lam2 <- 1; lam3 <- -0.15; lam4 <- -0.15
