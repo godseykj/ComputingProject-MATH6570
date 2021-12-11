@@ -152,10 +152,9 @@ wgpower <- getpower(a,(a^2), "rggamma",a,p,p)
 #this one is off too
 
 #lognormal (standard)
-
+lognormalpower <- getpower(0,1,"rlnorm")
 logpower <- getpower(exp(1/2),exp(2)-exp(1),"rlog")
-#lots of cvm warnings: p-value is smaller than 7.37e-10, cannot be computed more accurately
-#very off
+#this is better than option 1 (ks is still at 1 the whole time which is bad)
 
 #LoConN(0.2,3)
 p <- 0.2
