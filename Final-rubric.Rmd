@@ -1,0 +1,59 @@
+---
+title: "MATH 6570 Final Project"
+author: "Maria Rizzo"
+date: "November 29, 2021"
+output:
+  html_document:
+    code_folding: show
+    theme: lumen
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+---
+
+Final Project Information
+---
+
+Details for submission and grading.
+
+Presentations:  Final Exam period Monday (One group can volunteer to present on Friday last day of class). 
+
+Report and Slides:  Due on Wednesday of Final Exam week; Extension to Friday if absolutely necessary.
+
+* All group members participate in the presentation.
+
+* All group members contribute to the written report. 
+
+* Online submission of report.
+
+It is fine to present from your report if everything that you want to present is clear enough.
+
+## Important note on submission
+
+* All group members submit the same report.
+
+* Each group member must individually submit their copy of report in order to be graded. Submission for other group members is not automatic.
+
+### Use a nice template
+
+For the report, it may be helpful to use a style like this document, which adds a Table of Contents and code folding. However, ***any style that your group prefers*** is acceptable.
+
+
+## Grading Scheme
+
+
+* 10 Presentation: Demonstrate understanding of topic
+* 10 Presentation: Explanation of topic is easy to follow
+* 10 Presentation: Organization, clarity 
+* 10 Presentation: Overall
+* 10 Report:  Completeness
+* 10 Report:  Demonstrate understanding of topic and application
+* 10 Report:  Clearly explain methodology and implementation
+* 10 Report:  Reproducing empirical results from the selected paper 
+* 10 Report:  Accuracy 
+* 10 Report:  Overall writing and organization
+
+A great presentation will be interesting and educational for the entire audience. 
+
+Ask yourselves what would be the most interesting things about your project that add to or extend topics covered in class. Any new methods, challenges, etc. may be of interest to your audience. 

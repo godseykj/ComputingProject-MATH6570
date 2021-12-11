@@ -1,0 +1,36 @@
+---
+title: "Project_Computation"
+author: "Mansi Darji"
+date: "12/11/2021"
+output: 
+  html_document:
+    code_folding: show
+    theme: journal
+    toc: yes
+    to _float: yes
+  word_document:
+    toc: yes
+---
+
+
+## Section-1: Introduction
+
+## Section-2: Results
+
+## Seciton-3: Summary
+
+## References
+
+Yap, Bee Wah, and Chiaw Hock Sim. "Comparisons of various types of normality tests." Journal of Statistical Computation and Simulation 81.12 (2011): 2141-2155.
+
+```{r}
+citation(package = "fBasics")
+```
+
+```{r}
+citation(package = "normtest")
+citation(package = "lawstat")
+```
+
+## Appendix
+
