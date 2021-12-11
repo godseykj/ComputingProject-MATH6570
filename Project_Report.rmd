@@ -14,10 +14,24 @@ output:
 
 
 ## Section-1: Introduction
+  ## 1) Introduction of the paper
+  ## 2) Introduction of each test
+    ## Touch on the theory, maybe not as in-depth as the paper however
+  ## 3) Introduce the types of distributions and how we generate the random            variates
+  ## 4) Talk about the power of each test and how it is defined 
 
 ## Section-2: Results
-
-## Seciton-3: Summary
+  ## Grabbing critical values
+  ## Writing the code for the tests
+    ## Specify difficulties with the tests and any changes made.
+  ## Introduce by order in the paper (the table/figures) and then comment on        the difficulties associated with each test and distribution. 
+      ## Make a comment on anything that did not match.
+  ## Summarize the results of the paper
+  
+## Section-3: Summary
+  ## Talk about our own insights, whether we agree with the paper's conclusion,   and the highlights of what we learned while trying to replicate the results o   of the paper. 
+## Section-4: Future Work
+  ## Discuss how this could apply to future work, both in industry and              academia. 
 
 ## References
 
