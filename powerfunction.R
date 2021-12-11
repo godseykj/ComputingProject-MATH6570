@@ -113,7 +113,7 @@ gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 Tukeypower <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 
 # Trunc(-2, 2)
-Truncpower <- getpower(0, 1, "rtruncnorm", -2, 2) # Weird error
+Truncpower <- getpower(0, 1, "rtruncnorm", -2, 2)
 
 
 # Table 3 Long Tailed Distributions
