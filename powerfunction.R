@@ -3,12 +3,13 @@ library(lawstat)
 library(fBasics)
 library(gld)
 library(VGAM)
-library(truncnorm::rtrunctnorm)
+library(truncnorm)
+library(ggamma)
 
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
   #parameters which are any parameters that the distribution function requires (beyond sample size)
 cvalues <- read.table("critical_values.csv",header=TRUE)
-ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- cvalues[,4]; ADcrit <- cvalues[,5]; JBcrit <- cvalues[,6]; CVMcrit <- cvalues[,7]
+ssizes <- cvalues[,"ssizes"]; SWcrit <- cvalues[,"SWcrit"]; LLcrit <- cvalues[,"LLcrit"]; KScrit <- cvalues[,"KScrit"]; ADcrit <- cvalues[,"ADcrit"]; JBcrit <- cvalues[,"JBcrit"]; CVMcrit <- cvalues[,"CVMcrit"]
 getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL, p4=NULL){
   powerSW <- c()
   powerKS <- c()
@@ -73,6 +74,30 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
   powermatrix <<- cbind(ssizes, powerSW, powerKS, powerLL, powerAD, powerJB, powerCVM)
 }
 
+## homemade functions for distributions
+
+#scale contaminated function
+rScConN <- function(n,p,b){
+  k <- runif(n)
+  k <- ifelse(k <= p, 1, 0)
+  ScConNdist <- k*rnorm(n, mean = 0, sd=b) + (1-k)*rnorm(n)
+  ScConNdist
+}
+
+#location contaminated function
+rLoConN <- function(n,p,a){
+  k <- runif(n)
+  k <- ifelse(k <= p, 1, 0)
+  LoConNdist <- k*rnorm(n, mean = a, sd=1) + (1-k)*rnorm(n)
+  LoConNdist
+}
+
+#lognormal
+rlog <- function(n){
+  x <- rnorm(n,0,1)
+  dist <- exp(x)
+}
+
 ## Using the function
 
 # Table 2 Short Tailed Distributions
@@ -114,19 +139,31 @@ Laplacepower <- getpower(laplacemean, laplacevar, "rlaplace")
 # Asymptotic Distributions Table 4
 
 #weibull(3,1)
-gam <- 3; alpha <- 1
-wmean <- alpha*gamma(1 + (1/gam))
-wvar <- (alpha^2)*gamma(1+(2/gam)) - (alpha*gamma(1 + 1/gam))^2
-getpower(wmean, wvar, "rweibull",gam,alpha)
+alpha <- 3; beta <- 1
+wmean <- beta*gamma(1 + (1/alpha))
+wvar <- (beta^2)*(gamma(1+(2/alpha))-(gamma(1 + (1/alpha)))^2)
+weibullpower <- getpower(wmean, wvar, "rweibull",alpha,beta)
 #this one is off (KS, LL, JB, CVM), lots of KS warnings
 
+#ggamma method
+a <- 3
+p <- 1
+wgpower <- getpower(a,(a^2), "rggamma",a,p,p)
+#this one is off too
+
 #lognormal (standard)
-getpower(0,1,"rlnorm")
-#lots of cvm warnings: p-value is smaller than 7.37e-10, cannot be computed more accurately
-#very off
+lognormalpower <- getpower(0,1,"rlnorm")
+logpower <- getpower(exp(1/2),exp(2)-exp(1),"rlog")
+#this is better than option 1 (ks is still at 1 the whole time which is bad)
 
 #LoConN(0.2,3)
-getpower() #can't use this without the theoretical mean and variance...
+p <- 0.2
+a <- 3
+meanN1 <- a; meanN2 <- 0; varN1 <- 1; varN2 <- 1
+meanlcn <- p*meanN1 + (1-p)*meanN2
+varlcn <- (p^2)*varN1 + ((1-p)^2)*varN2
+LCnom <- getpower(meanlcn, varlcn, "rLoConN", p, a)
+#ks is wrong
 
 # Figure 1
 
@@ -159,7 +196,14 @@ gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 
 GLD2a <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 
-# Scale Contanimated Normal
+# Scale Contanimated Normal (0.05, 3)
+p <- 0.05
+b <- 3
+meanN1 <- 0; meanN2 <- 0; varN1 <- b; varN2 <- 1
+meanscn <- p*meanN1 + (1-p)*meanN2
+varscn <- (p^2)*varN1 + ((1-p)^2)*varN2
+SCnom <- getpower(meanscn, varscn, "rScConN", p, b)
+#ks and cvm are wrong
 
 #c - GLD(0,1,-0.15,-0.15)
 lam1 <- 0; lam2 <- 1; lam3 <- -0.15; lam4 <- -0.15
@@ -171,5 +215,14 @@ GLD2c <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 # Figure 3
 
 # Chi(4df)
+df <- 4
+chimean <- df
+chivar <- 2*df
+chipower <- getpower(chimean, chivar, "rchisq",df)
 
 # Beta(2,1)
+alpha <- 2
+beta <- 1
+betamean <- alpha / (alpha + beta)
+betavar <- (alpha*beta) / (((alpha+beta)^2)*(alpha+beta+1))
+betapower <- getpower(betamean, betavar, "rbeta",alpha, beta)
