@@ -8,7 +8,7 @@ library(truncnorm)
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
   #parameters which are any parameters that the distribution function requires (beyond sample size)
 cvalues <- read.table("critical_values.csv",header=TRUE)
-ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- cvalues[,4]; ADcrit <- cvalues[,5]; JBcrit <- cvalues[,6]; CVMcrit <- cvalues[,7]
+ssizes <- cvalues[,"ssizes"]; SWcrit <- cvalues[,"SWcrit"]; LLcrit <- cvalues[,"LLcrit"]; KScrit <- cvalues[,"KScrit"]; ADcrit <- cvalues[,"ADcrit"]; JBcrit <- cvalues[,"JBcrit"]; CVMcrit <- cvalues[,"CVMcrit"]
 getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL, p4=NULL){
   powerSW <- c()
   powerKS <- c()
@@ -135,7 +135,7 @@ Laplacepower <- getpower(laplacemean, laplacevar, "rlaplace")
 gam <- 3; alpha <- 1
 wmean <- alpha*gamma(1 + (1/gam))
 wvar <- (alpha^2)*gamma(1+(2/gam)) - (alpha*gamma(1 + 1/gam))^2
-getpower(wmean, wvar, "rweibull",gam,alpha)
+weibullpower <- getpower(wmean, wvar, "rweibull",gam,alpha)
 #this one is off (KS, LL, JB, CVM), lots of KS warnings
 
 #lognormal (standard)
@@ -144,7 +144,13 @@ getpower(0,1,"rlnorm")
 #very off
 
 #LoConN(0.2,3)
-getpower() #can't use this without the theoretical mean and variance...
+p <- 0.2
+a <- 3
+meanN1 <- a; meanN2 <- 0; varN1 <- 1; varN2 <- 1
+meanlcn <- p*meanN1 + (1-p)*meanN2
+varlcn <- (p^2)*varN1 + ((1-p)^2)*varN2
+LCnom <- getpower(meanlcn, varlcn, "rLoConN", p, a)
+#ks is wrong
 
 # Figure 1
 
@@ -180,7 +186,7 @@ GLD2a <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 # Scale Contanimated Normal (0.05, 3)
 p <- 0.05
 b <- 3
-meanN1 <- 0; meanN2 <- 0; varN1 <- 0; varN2 <- 1
+meanN1 <- 0; meanN2 <- 0; varN1 <- b; varN2 <- 1
 meanscn <- p*meanN1 + (1-p)*meanN2
 varscn <- (p^2)*varN1 + ((1-p)^2)*varN2
 SCnom <- getpower(meanscn, varscn, "rScConN", p, b)
