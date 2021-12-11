@@ -92,6 +92,12 @@ rLoConN <- function(n,p,a){
   LoConNdist
 }
 
+#lognormal
+rlog <- function(n){
+  x <- rnorm(n,0,1)
+  dist <- exp(x)
+}
+
 ## Using the function
 
 # Table 2 Short Tailed Distributions
@@ -146,7 +152,8 @@ wgpower <- getpower(a,(a^2), "rggamma",a,p,p)
 #this one is off too
 
 #lognormal (standard)
-getpower(0,1,"rlnorm")
+
+logpower <- getpower(exp(1/2),exp(2)-exp(1),"rlog")
 #lots of cvm warnings: p-value is smaller than 7.37e-10, cannot be computed more accurately
 #very off
 
