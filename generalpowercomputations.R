@@ -42,10 +42,6 @@ library(fBasics)
   RVAL
 }
 
-
-# ------------------------------------------------------------------------------
-
-
 .kurtosis.test <-
   function(x)
   {
@@ -86,10 +82,6 @@ library(fBasics)
     class(RVAL) = "htest"
     RVAL
   }
-
-
-# ------------------------------------------------------------------------------
-
 
 .omnibus.test <-
   function(x)
@@ -139,10 +131,6 @@ library(fBasics)
     class(RVAL) = "htest"
     RVAL
   }
-
-
-# ------------------------------------------------------------------------------
-
 
 dagotest =
   function(x, title = NULL, description = NULL)
@@ -224,7 +212,7 @@ for (a in 1:15){
   
   for (i in 1:50000){
     x <- rnorm(ssizes[a], 0, 1)
-    SW[i] <- shapiro.test(x)$statistic 
+    SW[i] <- shapiro.test(x)$statistic
     KS[i] <- ks.test(x, "pnorm")$statistic
     LL[i] <- lillie.test(x)$statistic 
     AD[i] <- ad.test(x)$statistic
