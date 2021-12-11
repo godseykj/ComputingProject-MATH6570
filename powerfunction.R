@@ -4,6 +4,7 @@ library(fBasics)
 library(gld)
 library(VGAM)
 library(truncnorm)
+library(ggamma)
 
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
   #parameters which are any parameters that the distribution function requires (beyond sample size)
@@ -132,11 +133,17 @@ Laplacepower <- getpower(laplacemean, laplacevar, "rlaplace")
 # Asymptotic Distributions Table 4
 
 #weibull(3,1)
-gam <- 3; alpha <- 1
-wmean <- alpha*gamma(1 + (1/gam))
-wvar <- (alpha^2)*gamma(1+(2/gam)) - (alpha*gamma(1 + 1/gam))^2
-weibullpower <- getpower(wmean, wvar, "rweibull",gam,alpha)
+alpha <- 3; beta <- 1
+wmean <- beta*gamma(1 + (1/alpha))
+wvar <- (beta^2)*(gamma(1+(2/alpha))-(gamma(1 + (1/alpha)))^2)
+weibullpower <- getpower(wmean, wvar, "rweibull",alpha,beta)
 #this one is off (KS, LL, JB, CVM), lots of KS warnings
+
+#ggamma method
+a <- 3
+p <- 1
+wgpower <- getpower(a,(a^2), "rggamma",a,p,p)
+#this one is off too
 
 #lognormal (standard)
 getpower(0,1,"rlnorm")
