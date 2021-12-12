@@ -7,93 +7,11 @@ library(truncnorm)
 
 #functions for dagostino pearson test
 # Edited source code from dagoTest in fBasics.
-.skewness.test <- function(x)
-{
-  # Internal Function for D'Agostino Normality Test:
-  
-  # FUNCTION:
-  
-  DNAME = deparse(substitute(x))
-  if (exists("complete.cases")) {
-    test = complete.cases(x)
-  } else {
-    test = !is.na(x)
-  }
-  x = x[test]
-  n = length(x)
-  meanX = mean(x)
-  s =  sqrt(mean((x-meanX)**2))
-  a3 = mean((x-meanX)**3)/s**3
-  SD3 = sqrt(6*(n-2)/((n+1)*(n+3)))
-  U3 = a3/SD3
-  b  = (3*(n**2+27*n-70)*(n+1)*(n+3))/((n-2)*(n+5)*(n+7)*(n+9))
-  W2 = sqrt(2*(b-1))-1
-  delta = 1/sqrt(log(sqrt(W2)))
-  a = sqrt(2/(W2-1))
-  Z3 = delta*log((U3/a)+sqrt((U3/a)**2+1))
-  pZ3 = 2*(1-pnorm(abs(Z3),0,1))
-  names(Z3) = "Z3"
-  
-  # Result:
-  RVAL = list(
-    statistic = Z3,
-    p.value = pZ3,
-    method = "D'Agostino Skewness Normality Test",
-    data.name = DNAME)
-  
-  # Return Value:
-  class(RVAL) = "htest"
-  RVAL
-}
 
-.kurtosis.test <- function(x)
-{
-  # Internal Function for D'Agostino Normality Test:
-  
-  # FUNCTION:
-  
-  DNAME = deparse(substitute(x))
-  
-  if (exists("complete.cases")) {
-    test = complete.cases(x)
-  } else {
-    test = !is.na(x)
-  }
-  x = x[test]
-  n = length(x)
-  meanX = mean(x)
-  s =  sqrt(mean((x-meanX)**2))
-  a4 = mean((x-meanX)**4)/s**4
-  SD4 = sqrt(24*(n-2)*(n-3)*n/((n+1)**2*(n+3)*(n+5)))
-  U4 = (a4-3+6/(n+1))/SD4
-  B = (6*(n*n-5*n+2)/((n+7)*(n+9)))*sqrt((6*(n+3)*(n+5))/(n*(n-2)*(n-3)))
-  A = 6+(8/B)*((2/B)+sqrt(1+4/(B**2)))
-  jm = sqrt(2/(9*A))
-  pos = ((1-2/A)/(1+U4*sqrt(2/(A-4))))**(1/3)
-  Z4 = (1-2/(9*A)-pos)/jm
-  pZ4 = 2*(1-pnorm(abs(Z4),0,1))
-  names(Z4) = "Z4"
-  
-  # Result:
-  RVAL = list(
-    statistic = Z4,
-    p.value = pZ4,
-    method = "D'Agostino Kurtosis Normality Test",
-    data.name = DNAME)
-  
-  # Return Value:
-  class(RVAL) = "htest"
-  RVAL
-}
-
-.omnibus.test <-
-  function(x)
-  {
+omnibus.test <- function(x){
     # Internal Function for D'Agostino Normality Test:
     
     # FUNCTION:
-    
-    DNAME = deparse(substitute(x))
     if (exists("complete.cases")) {
       test = complete.cases(x)
     } else {
@@ -120,77 +38,11 @@ library(truncnorm)
     pos = ((1-2/A)/(1+U4*sqrt(2/(A-4))))**(1/3)
     Z4 = (1-2/(9*A)-pos)/jm
     omni = Z3**2+Z4**2
-    pomni = 1-pchisq(omni,2)
-    names(omni) = "Chi2"
     
     # Result:
-    RVAL = list(
-      statistic = omni,
-      method = "D'Agostino Omnibus Normality Test",
-      p.value = pomni,
-      data.name = DNAME)
-    
-    # Return Value:
-    class(RVAL) = "htest"
-    RVAL
+    omni
   }
 
-dagotest =
-  function(x, title = NULL, description = NULL)
-  {
-    # A function implemented by Diethelm Wuertz
-    
-    # Description:
-    #   Performs the D'Agostino normality test
-    
-    # Source:
-    #   This function was inspired by ...
-    #   http://adela.karlin.mff.cuni.cz/~klaster/vyuka/
-    
-    # FUNCTION:
-    
-    # Data Set Name:
-    DNAME = deparse(substitute(x))
-    
-    # Convert Type:
-    if (class(x) == "fREG") x = residuals(x)
-    x = as.vector(x)
-    
-    # Call:
-    call = match.call()
-    
-    # Test:
-    ans = NA
-    test = .omnibus.test(x)
-    skew = .skewness.test(x)
-    kurt = .kurtosis.test(x)
-    test$data.name = DNAME
-    PVAL = c(test$p.value, skew$p.value, kurt$p.value)
-    names(PVAL) = c(
-      "Omnibus  Test",
-      "Skewness Test",
-      "Kurtosis Test")
-    test$p.value = PVAL
-    STATISTIC = c(test$statistic, skew$statistic, kurt$statistic)
-    names(STATISTIC) = c(
-      "Chi2 | Omnibus",
-      "Z3  | Skewness",
-      "Z4  | Kurtosis")
-    test$statistic = STATISTIC
-    class(test) = "list"
-    
-    # Add:
-    if (is.null(title)) title = "D'Agostino Normality Test"
-    if (is.null(description)) description = description()
-    
-    # Return Value:
-    new("fHTEST",
-        call = call,
-        data = list(x = x),
-        test = test,
-        title = as.character(title),
-        description = as.character(description) )
-  }
 
 
 #inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
@@ -233,7 +85,7 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
       KSd <- ks.test(distKS, "pnorm")$statistic
       LLd <- lillie.test(dist)$statistic 
       ADd <- ad.test(dist)$statistic
-      DPd <- dagotest(dist)@test$statistic[1]
+      DPd <- omnibus.test(dist)
       JBd <- rjb.test(dist, "JB")$statistic
       CVMd <- cvm.test(dist)$statistic
       c <- nclass.scott(dist)
@@ -297,9 +149,9 @@ Uniformpower <- getpower(0, 1, "runif")
 lam1 <- 0; lam2 <- 1; lam3 <- 1.25; lam4 <- 1.25
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
-Tukeypower <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
+system.time(Tukeypower <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4))
 
-# Trunc(-2, 2)
+ # Trunc(-2, 2)
 Truncpower <- getpower(0, 1, "rtruncnorm", -2, 2)
 
 
