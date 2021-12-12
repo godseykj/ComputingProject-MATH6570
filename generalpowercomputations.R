@@ -305,7 +305,6 @@ for (a in 1:15){
   powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
   }
 Unifpowermatrix <- cbind(ssizes, powerSW,  powerKS, powerLL, powerAD, powerDP, powerJB, powerCVM, powerCSQ)
-
 # We can use knitr to output tables as needed
 
 n <- 10
