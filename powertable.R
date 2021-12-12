@@ -57,8 +57,27 @@ ggplot(a, aes(x=a_ssizes, y=a_power)) +
   geom_point(aes(y=powerCVM), color="dark blue")
 
 #tweaking
-plot(x=a$ssizes, y=a$powerSW, xlab = "Sample Sizes", ylab = "Power")
-lines(a$ssizes, y=a$powerSW)
 
-a$ssizes <- factor(a$ssizes, levels=a$ssizes[order(a$ssizes)])
+table <- read.table("Figure2/scnom-b-figure2.csv")
+data <- data.frame(table)
+ss <- data[,1]
+power <- seq(0,1,10)
+sizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
+sizesnames <- as.character(sizes)
 
+ggplot(data,aes(x=ssizes, y=power)) + 
+  scale_x_continuous(breaks=c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000), limits = c("10", "15", "20", "25","30","40","50","100","200","300","400","500","1000","1500","2000")) +
+  geom_line(aes(y=powerSW), color="purple") +
+  geom_point(aes(y=powerSW), color="purple") +
+  geom_line(aes(y=powerKS), color="red") + 
+  geom_point(aes(y=powerKS), color="red") +
+  geom_line(aes(y=powerLL), color="blue") +
+  geom_point(aes(y=powerLL), color="blue") +
+  geom_line(aes(y=powerAD), color="green") +
+  geom_point(aes(y=powerAD), color="green") +
+  geom_line(aes(y=powerJB), color="orange") +
+  geom_point(aes(y=powerJB), color="orange") +
+  geom_line(aes(y=powerCVM), color="dark blue") +
+  geom_point(aes(y=powerCVM), color="dark blue") +
+  labs(x="sample size", y="power",title = "test") +
+  theme(plot.title = element_text(hjust = 0.5))
