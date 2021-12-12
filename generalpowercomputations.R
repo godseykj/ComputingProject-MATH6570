@@ -331,5 +331,23 @@ Unifpowermatrix <- cbind(ssizes, powerSW,  powerKS, powerLL, powerAD, powerDP, p
 
 # We can use knitr to output tables as needed
 
-
+n <- 100
+CSQ <- numeric()
+CSQcrit <- numeric()
+for (i in 1:50000){
+    x <- rnorm(n, 0, 1)
+    c <- nclass.scott(x)
+    CSQ[i] <- pearson.test(x, n.classes=c)$statistic
+}
+CSQcrit <- quantile(CSQ, 1-0.05)
+CSQstat <- numeric()
+testCSQ <- numeric()
+powerCSQ <- c()
+for(i in 1:10000) { 
+  dist <- runif(n, 0, 1)
+  stat1 <- pearson.test(dist, n.classes=c)$statistic
+  CSQstat[i] <- stat1
+  ifelse(CSQstat[i] >=CSQcrit[c], testCSQ[i] <- 1, testCSQ[i] <- 0)
+}
+powerCSQ <- sum(testCSQ)/10000
 
