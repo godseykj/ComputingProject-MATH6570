@@ -269,6 +269,8 @@ for (a in 1:15){
 Critvaluematrix <- cbind(ssizes, SWcrit, KScrit, LLcrit, ADcrit, DPcrit, JBcrit, CVMcrit, CSQcrit)
 write.table(Critvaluematrix, "critical_values.csv")
 
+CSQcrit <- Critvaluematrix[, 9]
+
 powerSW <- c()
 powerKS <- c()
 powerLL <- c()
@@ -305,7 +307,7 @@ for (a in 1:15){
     JBd <- rjb.test(dist,option="JB")$statistic
     CVMd <- cvm.test(dist)$statistic
     
-    c <- nclass.scott(x)
+    c <- nclass.scott(dist)
     CSQd <- pearson.test(dist, n.classes=c)$statistic
     
     ifelse(SWd <= SWcrit[a], testSW[i] <- 1, testSW[i] <- 0)
@@ -331,7 +333,7 @@ Unifpowermatrix <- cbind(ssizes, powerSW,  powerKS, powerLL, powerAD, powerDP, p
 
 # We can use knitr to output tables as needed
 
-n <- 100
+n <- 10
 CSQ <- numeric()
 CSQcrit <- numeric()
 for (i in 1:50000){
@@ -345,9 +347,11 @@ testCSQ <- numeric()
 powerCSQ <- c()
 for(i in 1:10000) { 
   dist <- runif(n, 0, 1)
+  c <- nclass.scott(dist)
   stat1 <- pearson.test(dist, n.classes=c)$statistic
   CSQstat[i] <- stat1
-  ifelse(CSQstat[i] >=CSQcrit[c], testCSQ[i] <- 1, testCSQ[i] <- 0)
+  ifelse(CSQstat[i] >= CSQcrit, testCSQ[i] <- 1, testCSQ[i] <- 0)
 }
 powerCSQ <- sum(testCSQ)/10000
+powerCSQ
 
