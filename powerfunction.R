@@ -184,16 +184,9 @@ wvar <- (beta^2)*(gamma(1+(2/alpha))-(gamma(1 + (1/alpha)))^2)
 weibullpower <- getpower(wmean, wvar, "rweibull",alpha,beta)
 #this one is off (KS, LL, JB, CVM), lots of KS warnings
 
-#ggamma method
-a <- 3
-p <- 1
-wgpower <- getpower(a,(a^2), "rggamma",a,p,p)
-#this one is off too
-
 #lognormal (standard)
-lognormalpower <- getpower(0,1,"rlnorm")
 logpower <- getpower(exp(1/2),exp(2)-exp(1),"rlog")
-#this is better than option 1 (ks is still at 1 the whole time which is bad)
+#this is better than the built in lognormal function (ks is still at 1 the whole time which is bad)
 
 #LoConN(0.2,3)
 p <- 0.2
