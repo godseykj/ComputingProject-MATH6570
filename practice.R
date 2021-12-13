@@ -1,3 +1,5 @@
+## All code in here was written by Kara unless stated otherwise. Some of it works, some of it doesn't.
+
 #### Table 2
 
 #1 sample size at a time
@@ -399,7 +401,7 @@ ssizes <- cvalues[,1]; SWcrit <- cvalues[,2]; LLcrit <- cvalues[,3]; KScrit <- c
 lam1 <- 0; lam2 <- 1; lam3 <- 1.25; lam4 <- 1.25
 A <- ((1/(1+lam3)) - (1/(1+lam4)))
 B <- ((1/(1+2*lam3)) - (1/(1+2*lam4))) - 2*beta(1 + lam3, 1 + lam4)
-gldmean <- la m1 + (A/lam2)
+gldmean <- lam1 + (A/lam2)
 gldvar <- lam1 + ((B - A^2)/(lam2^2))
 
 getpower(gldmean, gldvar, "rGLD",lam1, lam2, lam3, lam4)
