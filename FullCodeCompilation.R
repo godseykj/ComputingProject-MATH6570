@@ -5,6 +5,7 @@ library(VGAM)
 library(truncnorm)
 library(ggplot2)
 
+# Edited from dagoTest(x) in fBasics library. 
 omnibus.test <- function(x){
   # Internal Function for D'Agostino Normality Test:
   
