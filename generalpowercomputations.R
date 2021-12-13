@@ -50,8 +50,38 @@ omnibus.test <- function(x){
     RVAL
   }
 
+# All code here is written by Jeremiah and Kara.
+
+# Sample code to find the power of a single sample size and test.
+
+n <- 10
+CSQ <- numeric()
+CSQcrit <- numeric()
+for (i in 1:50000){
+  x <- rnorm(n, 0, 1)
+  c <- nclass.scott(x)
+  CSQ[i] <- pearson.test(x, n.classes=c)$statistic
+}
+CSQcrit <- quantile(CSQ, 1-0.05)
+CSQstat <- numeric()
+testCSQ <- numeric()
+powerCSQ <- c()
+for(i in 1:10000) { 
+  dist <- runif(n, 0, 1)
+  c <- nclass.scott(dist)
+  stat1 <- pearson.test(dist, n.classes=c)$statistic
+  CSQstat[i] <- stat1
+  ifelse(CSQstat[i] >= CSQcrit, testCSQ[i] <- 1, testCSQ[i] <- 0)
+}
+powerCSQ <- sum(testCSQ)/10000
+powerCSQ
+
+
+# Sample code to obtain the critical values of all tests.
+
 alpha <- 0.05
 ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
+
 
 SW <- numeric()
 KS <- numeric()
@@ -106,8 +136,8 @@ for (a in 1:15){
 Critvaluematrix <- cbind(ssizes, SWcrit, KScrit, LLcrit, ADcrit, DPcrit, JBcrit, CVMcrit, CSQcrit)
 write.table(Critvaluematrix, "critical_values.csv")
 
-CSQcrit <- Critvaluematrix[, 9]
 
+# Sample code to find the power for all sample sizes for all tests of a distribution.
 powerSW <- c()
 powerKS <- c()
 powerLL <- c()
@@ -167,27 +197,3 @@ for (a in 1:15){
   powerCSQ <- c(powerCSQ, sum(testCSQ)/10000)
   }
 Unifpowermatrix <- cbind(ssizes, powerSW,  powerKS, powerLL, powerAD, powerDP, powerJB, powerCVM, powerCSQ)
-# We can use knitr to output tables as needed
-
-n <- 10
-CSQ <- numeric()
-CSQcrit <- numeric()
-for (i in 1:50000){
-    x <- rnorm(n, 0, 1)
-    c <- nclass.scott(x)
-    CSQ[i] <- pearson.test(x, n.classes=c)$statistic
-}
-CSQcrit <- quantile(CSQ, 1-0.05)
-CSQstat <- numeric()
-testCSQ <- numeric()
-powerCSQ <- c()
-for(i in 1:10000) { 
-  dist <- runif(n, 0, 1)
-  c <- nclass.scott(dist)
-  stat1 <- pearson.test(dist, n.classes=c)$statistic
-  CSQstat[i] <- stat1
-  ifelse(CSQstat[i] >= CSQcrit, testCSQ[i] <- 1, testCSQ[i] <- 0)
-}
-powerCSQ <- sum(testCSQ)/10000
-powerCSQ
-
