@@ -1,6 +1,5 @@
 library(nortest)
 library(lawstat)
-library(fBasics)
 library(gld)
 library(VGAM)
 library(truncnorm)
