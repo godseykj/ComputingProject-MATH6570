@@ -114,6 +114,7 @@ n <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000) # 
 
     # We tried to use an rpackage for lognormal, but got bad results. Generated random normal variates and 
     # found e^X for those random variates to generate lognormal, and got better results
+    # Mian derived mean/variance for LocConNormal
     # Kara wrote function for location contaminated normal
       # rLoConN <- function(n,p,a){
         # k <- runif(n)
