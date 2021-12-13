@@ -1,7 +1,14 @@
 # Calculating Error & Percent Difference
 # Table 2
 
-# General Code # We could of made a function, but it was just as quick to do it manually like this
+# We could of made a function akin to powertable.r, but we chose not to.
+# The matrices of each test were copied and replaced in the main code of the file (as we would
+# want a function to do). Since we only had to do this 9 times, it seemed easy enough to do manually.
+
+# The idea to do an error based on standard error was Kara's, the method and theory
+# was done by Mian, and the code implementation done by Jeremiah.
+
+# General Code
 Theory <- matrix(
 c(10, 0.1381, 0.0714, 0.1188, 0.1365, 0.1111, 0.1157, 0.1329, 0.0000,
   20, 0.2558, 0.0965, 0.217, 0.2634, 0.1448, 0.1615, 0.2559, 0.0279,
@@ -17,6 +24,7 @@ ncol=9,
 byrow=TRUE)
 ss <- Theory[, 1]
 
+# Upper/Lower bound for the intervals based on theoretical means from the paper. 
 upperbound <- matrix(NA, 9, 9)
 upperbound[,1] <- ss
 for (i in 1:9){
@@ -32,9 +40,11 @@ for (i in 1:9){
   }
 }
 
+# Grabbing our experimental results
 Experimental <- read.table("Table4/loconnorm.csv")
 Experimental <- Experimental[Experimental$ssizes %in% ss,]
 
+# Comparison of experimental and theoretical values.
 Approval <- matrix(NA, 9, 9)
 Approval[, 1] <- ss
 for (i in 1:9){
@@ -48,6 +58,8 @@ for (i in 1:9){
 
 colnames(Approval) <- c("Sample", "SW", "KS", "LL", "AD", "DP", "JB", "CVM", "CSQ")
 write.table(Approval, "Approval/LocConNorm")
+
+# Copy/paste data entry from the paper.
 
 #U(0,1)
 Uniform <- matrix(
