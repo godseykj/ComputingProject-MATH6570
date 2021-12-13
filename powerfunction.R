@@ -5,7 +5,9 @@ library(gld)
 library(VGAM)
 library(truncnorm)
 
-#functions for dagostino pearson test
+# The final code we used to find the power values for all distributions. Primarily written and compiled by Kara.
+# The function is based on code and information in generalpowercomputations.r and Reference.r files. 
+
 # Edited source code from dagoTest in fBasics.
 
 omnibus.test <- function(x){
@@ -43,10 +45,9 @@ omnibus.test <- function(x){
     omni
   }
 
-
-
-#inputs are theoretical mean, theoretical variance, r function to generate distribution (in quotations, i.e. "rnorm"), and optional...
-  #parameters which are any parameters that the distribution function requires (beyond sample size)
+# Kara's home made functions for distributions
+# Inputs are theoretical mean, theoretical variance, r function to generate random variates,
+# any parameters that the distribution function requires (beyond sample size)
 cvalues <- read.table("critical_values.csv",header=TRUE)
 ssizes <- cvalues[,"ssizes"]; SWcrit <- cvalues[,"SWcrit"]; LLcrit <- cvalues[,"LLcrit"]; KScrit <- cvalues[,"KScrit"]; ADcrit <- cvalues[,"ADcrit"]; JBcrit <- cvalues[,"JBcrit"]; CVMcrit <- cvalues[,"CVMcrit"]; DPcrit <- cvalues[,"DPcrit"]; CSQcrit <- cvalues[,"CSQcrit"]
 getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL, p4=NULL){
@@ -113,8 +114,6 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
   powermatrix <<- cbind(ssizes, powerSW, powerKS, powerLL, powerAD, powerDP, powerJB, powerCVM, powerCSQ)
 }
 
-## homemade functions for distributions
-
 #scale contaminated function
 rScConN <- function(n,p,b){
   k <- runif(n)
@@ -142,6 +141,7 @@ rlog <- function(n){
 # Table 2 Short Tailed Distributions
 
 # Uniform 
+
 Uniformpower <- getpower(0, 1, "runif")
 
 # Tukey(0, 1, 1.25, 1.25)
@@ -152,24 +152,27 @@ gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 system.time(Tukeypower <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4))
 
  # Trunc(-2, 2)
-Truncpower <- getpower(0, 1, "rtruncnorm", -2, 2)
 
+Truncpower <- getpower(0, 1, "rtruncnorm", -2, 2)
 
 # Table 3 Long Tailed Distributions
 
 #t distribution - t(15)
+
 tmean <- 0
 df <- 15
 tvar <- df / (df-2)
 Tpower <- getpower(tmean, tvar, "rt", df)
 
 #logistic  (Standard)
+
 logmean <- 0
 logvar <- (pi^2)/3
 logsd <- sqrt(logvar)
 Logisticpower <- getpower(logmean, logvar, "rlogis")
 
 #Laplace (Standard)
+
 laplacemean <- 0
 laplacevar <- 2
 laplacesd <- sqrt(laplacevar)
@@ -178,81 +181,84 @@ Laplacepower <- getpower(laplacemean, laplacevar, "rlaplace")
 # Asymptotic Distributions Table 4
 
 #weibull(3,1)
+
 alpha <- 3; beta <- 1
 wmean <- beta*gamma(1 + (1/alpha))
 wvar <- (beta^2)*(gamma(1+(2/alpha))-(gamma(1 + (1/alpha)))^2)
 weibullpower <- getpower(wmean, wvar, "rweibull",alpha,beta)
-#this one is off (KS, LL, JB, CVM), lots of KS warnings
 
 #lognormal (standard)
+
 logpower <- getpower(exp(1/2),exp(2)-exp(1),"rlog")
-#this is better than the built in lognormal function (ks is still at 1 the whole time which is bad)
 
 #LoConN(0.2,3)
+
 p <- 0.2
 a <- 3
 meanN1 <- a; meanN2 <- 0; varN1 <- 1; varN2 <- 1
 meanlcn <- p*meanN1 + (1-p)*meanN2
 varlcn <- (p^2)*varN1 + ((1-p)^2)*varN2
 LCnom <- getpower(meanlcn, varlcn, "rLoConN", p, a)
-#ks is wrong
 
 # Figure 1
 
 #a - GLD(0,1,0.75,0.75)
+
 lam1 <- 0; lam2 <- 1; lam3 <- 0.75; lam4 <- 0.75
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 GLD1a <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 
 #b - GLD(0,1,0.5,0.5)
+
 lam1 <- 0; lam2 <- 1; lam3 <- 0.5; lam4 <- 0.5
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
-
 GLD1b <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 
 #c - GLD(0,1,0.25,0.25)
+
 lam1 <- 0; lam2 <- 1; lam3 <- 0.25; lam4 <- 0.25
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
-
 GLD1c <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 
 # Figure 2 
 
 #a - GLD(0,1,-0.1,-0.1)
+
 lam1 <- 0; lam2 <- 1; lam3 <- -0.10; lam4 <- -0.10
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
-
 GLD2a <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 
 # Scale Contanimated Normal (0.05, 3)
+
 p <- 0.05
 b <- 3
 meanN1 <- 0; meanN2 <- 0; varN1 <- b; varN2 <- 1
 meanscn <- p*meanN1 + (1-p)*meanN2
 varscn <- (p^2)*varN1 + ((1-p)^2)*varN2
 SCnom <- getpower(meanscn, varscn, "rScConN", p, b)
-#ks and cvm are wrong
 
 #c - GLD(0,1,-0.15,-0.15)
+
 lam1 <- 0; lam2 <- 1; lam3 <- -0.15; lam4 <- -0.15
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
 gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
-
 GLD2c <- getpower(gldmean, gldvar, "rgl", lam1, lam2, lam3, lam4)
 
 # Figure 3
 
 # Chi(4df)
+
 df <- 4
 chimean <- df
 chivar <- 2*df
 chipower <- getpower(chimean, chivar, "rchisq",df)
 
 # Beta(2,1)
+
 alpha <- 2
 beta <- 1
 betamean <- alpha / (alpha + beta)
