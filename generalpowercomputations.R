@@ -82,7 +82,6 @@ powerCSQ
 alpha <- 0.05
 ssizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
 
-
 SW <- numeric()
 KS <- numeric()
 LL <- numeric()
