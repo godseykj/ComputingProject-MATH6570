@@ -5,23 +5,31 @@ graph <- function(filename, distribution){
   table <- read.table(filename)
   data <- data.frame(table)
   ss <- data[,1]
-  power <- seq(0,1,10)
   
-  ggplot(data, aes(x=ss, y=power)) + 
-    geom_line(aes(y=powerSW), color="purple") +
-    geom_point(aes(y=powerSW), color="purple") +
-    geom_line(aes(y=powerKS), color="red") + 
-    geom_point(aes(y=powerKS), color="red") +
-    geom_line(aes(y=powerLL), color="blue") +
-    geom_point(aes(y=powerLL), color="blue") +
-    geom_line(aes(y=powerAD), color="green") +
-    geom_point(aes(y=powerAD), color="green") +
-    geom_line(aes(y=powerJB), color="orange") +
-    geom_point(aes(y=powerJB), color="orange") +
-    geom_line(aes(y=powerCVM), color="dark blue") +
-    geom_point(aes(y=powerCVM), color="dark blue") +
-    labs(x="sample size", y="power",title = distribution) +
-    theme(plot.title = element_text(hjust = 0.5))
+  colors <- c("SW"="purple","KS"="red","LL"="blue","AD"="green",
+              "JB"="orange","CVM"="dark blue", "DP"="black", "CSQ"="pink")
+  
+  ggplot(data, aes(x=seq(1,15), y=seq(0,1,10))) + 
+    geom_line(aes(y=powerSW), color="SW") +
+    geom_point(aes(y=powerSW), color="SW") +
+    geom_line(aes(y=powerKS), color="KS") + 
+    geom_point(aes(y=powerKS), color="KS") +
+    geom_line(aes(y=powerLL), color="LL") +
+    geom_point(aes(y=powerLL), color="LL") +
+    geom_line(aes(y=powerAD), color="AD") +
+    geom_point(aes(y=powerAD), color="AD") +
+    geom_line(aes(y=powerJB), color="JB") +
+    geom_point(aes(y=powerJB), color="JB") +
+    geom_line(aes(y=powerCVM), color="CVM") +
+    geom_point(aes(y=powerCVM), color="CVM") +
+    geom_line(aes(y=powerDP), color="DP") +
+    geom_point(aes(y=powerDP), color="DP") +
+    geom_line(aes(y=powerCSQ), color="CSQ") +
+    geom_point(aes(y=powerCSQ), color="CSQ") +
+    labs(x="sample size", y="power",title = distribution, color="Legend") +
+    scale_x_continuous(breaks=seq(1,15),labels=c("10","15","20","25","30","40","50","100","200","300","400","500","1000","1500","2000")) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    scale_color_manual(values=colors)
 }
 
 #using the function
@@ -65,8 +73,14 @@ power <- seq(0,1,10)
 sizes <- c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000)
 sizesnames <- as.character(sizes)
 
-ggplot(data,aes(x=ssizes, y=power)) + 
-  scale_x_continuous(breaks=c(10, 15, 20, 25, 30, 40, 50, 100, 200, 300, 400, 500, 1000, 1500, 2000), limits = c("10", "15", "20", "25","30","40","50","100","200","300","400","500","1000","1500","2000")) +
+distribution <- c("GLD(0,1,0.75,0.75)")
+filename <- c("Figure1/gld-a.csv")
+table <- read.table(filename)
+data <- data.frame(table)
+ss <- data[,1]
+power <- seq(0,1,10)
+
+ggplot(data, aes(x=seq(1,15), y=power)) + 
   geom_line(aes(y=powerSW), color="purple") +
   geom_point(aes(y=powerSW), color="purple") +
   geom_line(aes(y=powerKS), color="red") + 
@@ -79,5 +93,10 @@ ggplot(data,aes(x=ssizes, y=power)) +
   geom_point(aes(y=powerJB), color="orange") +
   geom_line(aes(y=powerCVM), color="dark blue") +
   geom_point(aes(y=powerCVM), color="dark blue") +
-  labs(x="sample size", y="power",title = "test") +
+  geom_line(aes(y=powerDP), color="black") +
+  geom_point(aes(y=powerDP), color="black") +
+  geom_line(aes(y=powerCSQ), color="pink") +
+  geom_point(aes(y=powerCSQ), color="pink") +
+  labs(x="sample size", y="power",title = distribution) +
+  scale_x_continuous(breaks=seq(1,15),labels=c("10","15","20","25","30","40","50","100","200","300","400","500","1000","1500","2000")) +
   theme(plot.title = element_text(hjust = 0.5))
