@@ -187,15 +187,7 @@ pre code {
 
 <div id="TOC">
 <ul>
-<li><a href="#section-1-introduction">Section 1: Introduction</a>
-<ul>
-<li><a href="#random-variates-generated-from-standard-normal-distributions">Random variates generated from Standard Normal Distributions</a></li>
-<li><a href="#random-variates-generated-from-alternativenon-normal-distributions">Random Variates generated from alternative(non-normal) distributions</a>
-<ul>
-<li><a href="#type-of-the-distributions">Type of the distributions:</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#section-2-process">Section 2: Process</a>
+<li><a href="#section-1-process">Section 1: Process</a>
 <ul>
 <li><a href="#obtaining-the-critical-values">Obtaining the critical values</a></li>
 <li><a href="#evaluating-the-power-of-each-distribution">Evaluating the Power of each distribution</a></li>
@@ -204,7 +196,7 @@ pre code {
 <li><a href="#function-to-graph">Function to Graph</a></li>
 <li><a href="#approval-matrix-error-analysis">Approval Matrix / Error Analysis</a></li>
 </ul></li>
-<li><a href="#section-3-results">Section 3: Results</a>
+<li><a href="#section-2-results">Section 2: Results</a>
 <ul>
 <li><a href="#table-2">Table 2</a></li>
 <li><a href="#table-3">Table 3</a></li>
@@ -214,129 +206,12 @@ pre code {
 <li><a href="#figure-3">Figure 3</a></li>
 <li><a href="#accuracy">Accuracy</a></li>
 </ul></li>
-<li><a href="#section-4-summary">Section 4: Summary</a></li>
 <li><a href="#references">References</a></li>
-<li><a href="#appendix">Appendix</a></li>
 </ul>
 </div>
 
-<div id="section-1-introduction" class="section level1">
-<h1>Section 1: Introduction</h1>
-<p>Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests.</p>
-<ol style="list-style-type: decimal">
-<li>Shapiro-Wilk test(SW test)</li>
-<li>Kolmogorov-Smirnov test(KS test)</li>
-<li>Lilliefors test(LL test)</li>
-<li>Cramer-Von mises test (CVM test)</li>
-<li>Pearson’s Chi-Squared test (CSQ test)</li>
-<li>Anderson-Darling test (AD test)</li>
-<li>Jarque-Bera test (JB test)</li>
-<li>D’Agostino–Pearson Omnibus test (DP test)</li>
-</ol>
-<p>Hypothesis testing for Normality assumption(whether the observed sample comes from a population with a normal distribution)</p>
-<p><strong>H0</strong>: Observed sample comes from a population with a normal distribution (OR Non-normal distribution comes from the normal distribution family) (OR Random sample of n independent observations come from a population with a normal <span class="math display">\[N(\mu,{\sigma}^2) \]</span>) ) <strong>H1</strong>: Observed sample does not come from a population with a normal distribution (or Non-normal distribution does not come from the normal distribution family.) (OR Random sample of n independent observations does not come from a population with a normal <span class="math display">\[N(\mu,{\sigma}^2) \]</span>))</p>
-<p>Criteria to do comparison among the 8 normality tests: 1. They all should have the same probability of rejecting the Null Hypothesis when the distribution is truly normal(Same Type-I error rate(significance level: <span class="math display">\[\alpha\]</span> ). Alpha=0.05 is considered for all simulation results.</p>
-<div id="random-variates-generated-from-standard-normal-distributions" class="section level2">
-<h2>Random variates generated from Standard Normal Distributions</h2>
-<ol style="list-style-type: decimal">
-<li>50,000 simulated samples for particular sample size are generated using <code>rnorm</code> function with mean=0 and standard deviation=1; and then the Test Statistic values are obtained from them.</li>
-<li>For a particular sample size, the 50,000 generated test statistics are sorted to generate an empirical distribution</li>
-<li>quantile function is used to get the sample quantile from the generated empirical distribution for the mentioned probability. That value of sample quantile is used as the Critical value.</li>
-<li>Left-tailed test: <strong>SW test</strong> and Critical values are the <span class="math display">\[100(\alpha)\]</span>th percentile of the empirical distribution</li>
-<li>For Right-tailed tests: <strong>AD, LL, CVM, DP,JB and CSQ tests</strong> : and Two-tailed test: <strong>KS test</strong>: , Critical values are the <span class="math display">\[100(1-\alpha)\]</span>th percentiles of the empirical distribution</li>
-<li>For <strong>CSQ test</strong>, we used different approach than paper to compute the number of bins. We used the R function nclass.scott(x) to compute it.</li>
-<li>For <strong>DP Omnibus test</strong>, we have done the modification in original source code, so it can consider the sample size less than 20 as well.</li>
-</ol>
-<pre class="r"><code># Edited from dagoTest(x) in fBasics library. 
-omnibus.test &lt;- function(x){
-  # Internal Function for D&#39;Agostino Normality Test:
-  
-  # FUNCTION:
-  if (exists(&quot;complete.cases&quot;)) {
-    test = complete.cases(x)
-  } else {
-    test = !is.na(x)
-  }
-  x = x[test]
-  n = length(x)
-  meanX = mean(x)
-  s =  sqrt(mean((x-meanX)**2))
-  a3 = mean((x-meanX)**3)/s**3
-  a4 = mean((x-meanX)**4)/s**4
-  SD3 = sqrt(6*(n-2)/((n+1)*(n+3)))
-  SD4 = sqrt(24*(n-2)*(n-3)*n/((n+1)**2*(n+3)*(n+5)))
-  U3 = a3/SD3
-  U4 = (a4-3+6/(n+1))/SD4
-  b  = (3*(n**2+27*n-70)*(n+1)*(n+3))/((n-2)*(n+5)*(n+7)*(n+9))
-  W2 = sqrt(2*(b-1))-1
-  delta = 1/sqrt(log(sqrt(W2)))
-  a = sqrt(2/(W2-1))
-  Z3 = delta*log((U3/a)+sqrt((U3/a)**2+1))
-  B = (6*(n*n-5*n+2)/((n+7)*(n+9)))*sqrt((6*(n+3)*(n+5))/(n*(n-2)*(n-3)))
-  A = 6+(8/B)*((2/B)+sqrt(1+4/(B**2)))
-  jm = sqrt(2/(9*A))
-  pos = ((1-2/A)/(1+U4*sqrt(2/(A-4))))**(1/3)
-  Z4 = (1-2/(9*A)-pos)/jm
-  omni = Z3**2+Z4**2
-  
-  # Result:
-  omni
-}</code></pre>
-</div>
-<div id="random-variates-generated-from-alternativenon-normal-distributions" class="section level2">
-<h2>Random Variates generated from alternative(non-normal) distributions</h2>
-<ol style="list-style-type: decimal">
-<li>10,000 simulated samples for particular sample size were generated from a given non-normal distributions. We have used inbuilt R functions for some distributions and created the home-made functions for some distributions. Then the Test Statistic values were obtained from them.</li>
-<li>For a particular sample size, the 10,000 generated test statistics were sorted to generate an empirical distribution</li>
-<li>Steps 3-7 are similar with the steps 3-7 mentioned for generating random variates from standard normal distributions.<br />
-</li>
-<li>The power of the normality test for the 10,000 simulated samples for particular sample size is the proportion of samples which the test rejected the null hypothesis of normality.</li>
-</ol>
-<div id="type-of-the-distributions" class="section level3">
-<h3>Type of the distributions:</h3>
-<ol style="list-style-type: decimal">
-<li><p><strong>Uniform- U(0,1)</strong>: R function <code>runif</code> is used to generate the random variates from uniform distribution.</p></li>
-<li><p><strong>Generalised Lamda Distribution(GLD(lambda1, lambda2, lambda3, lambda4))</strong>: R function <code>gld.moments</code> is used to generate the random variates for this distribution for given paramater values.</p></li>
-</ol>
-<p>lambda 1 - location parameter, lambda 2 - scale parameter, lambda 3 - first shape parameter, lambda 4 - second shape</p>
-<ol start="3" style="list-style-type: decimal">
-<li><p><strong>Tukey(lambda1, lambda2, lambda3, lambda4)</strong>: This is a type of generalized lamda distribution. So, R function <code>gld.moments</code> is used to generate the random variates.</p></li>
-<li><p><strong>Trunc(a,b)</strong>: R function <code>rtruncnorm</code> is used to generate the random deviates for this distribution.</p></li>
-<li><p><strong>Scale Contaminated Normal: ScConN(p,b):</strong> We have created below function to generate the random variates from this distribution.</p></li>
-</ol>
-<pre class="r"><code>rScConN &lt;- function(n,p,b){
-  k &lt;- runif(n)
-  k &lt;- ifelse(k &lt;= p, 1, 0)
-  ScConNdist &lt;- k*rnorm(n, mean = 0, sd=b) + (1-k)*rnorm(n)
-  ScConNdist
-}</code></pre>
-<ol start="6" style="list-style-type: decimal">
-<li><p><strong>t(15)</strong>: R function <code>rt</code> is used to generate the random deviates from this distribution.</p></li>
-<li><p><strong>Logistic</strong>: R function <code>rlogis</code> is used to generate random deviates from this distribution.</p></li>
-<li><p><strong>Laplace</strong>: R function <code>rlaplace</code> is used to generate random deviates from this distribution.</p></li>
-<li><p><strong>Chi()</strong>: R function <code>rchisq</code> is used to generate random deviates from this distribution.</p></li>
-<li><p><strong>Beta</strong>: R function <code>rbeta</code> is used to generate random deviates from this distribution.</p></li>
-<li><p><strong>Weibull</strong>: R function <code>rweibull</code> is used to generate random deviates from this distribution.</p></li>
-<li><p><strong>Lognormal</strong>: We have created below function to generate the random variates from this distribution.</p></li>
-</ol>
-<pre class="r"><code>rlog &lt;- function(n){
-  x &lt;- rnorm(n,0,1)
-  dist &lt;- exp(x)
-}</code></pre>
-<ol start="13" style="list-style-type: decimal">
-<li><strong>Location Contaminated Normal</strong>: We have created below function to generate the random variates from this distribution.</li>
-</ol>
-<pre class="r"><code>rLoConN &lt;- function(n,p,a){
-  k &lt;- runif(n)
-  k &lt;- ifelse(k &lt;= p, 1, 0)
-  LoConNdist &lt;- k*rnorm(n, mean = a, sd=1) + (1-k)*rnorm(n)
-  LoConNdist
-}</code></pre>
-</div>
-</div>
-</div>
-<div id="section-2-process" class="section level1">
-<h1>Section 2: Process</h1>
+<div id="section-1-process" class="section level1">
+<h1>Section 1: Process</h1>
 <div id="obtaining-the-critical-values" class="section level2">
 <h2>Obtaining the critical values</h2>
 <pre class="r"><code>alpha &lt;- 0.05
@@ -1092,10 +967,10 @@ for (i in 1:9){
 
 colnames(Approval) &lt;- c(&quot;Sample&quot;, &quot;SW&quot;, &quot;KS&quot;, &quot;LL&quot;, &quot;AD&quot;, &quot;DP&quot;, &quot;JB&quot;, &quot;CVM&quot;, &quot;CSQ&quot;)
 write.table(Approval, &quot;Approval/LocConNorm.csv&quot;)</code></pre>
-<pre class="r"><code>x &lt;- read.table(&quot;Approval/LocConNorm.csv&quot;)
-kable(x, &quot;pipe&quot;, caption=&quot;Approval Matrix for Location Contaminated Normal&quot;)</code></pre>
+<pre class="r"><code>x &lt;- read.table(&quot;Approval/Uniform&quot;)
+kable(x, &quot;pipe&quot;, caption=&quot;Approval Matrix for Uniform&quot;)</code></pre>
 <table>
-<caption>Approval Matrix for Location Contaminated Normal</caption>
+<caption>Approval Matrix for Uniform</caption>
 <thead>
 <tr class="header">
 <th align="right">Sample</th>
@@ -1113,7 +988,7 @@ kable(x, &quot;pipe&quot;, caption=&quot;Approval Matrix for Location Contaminat
 <tr class="odd">
 <td align="right">10</td>
 <td align="right">1</td>
-<td align="right">0</td>
+<td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -1123,52 +998,52 @@ kable(x, &quot;pipe&quot;, caption=&quot;Approval Matrix for Location Contaminat
 </tr>
 <tr class="even">
 <td align="right">20</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">30</td>
 <td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
 <td align="right">0</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
 <td align="right">1</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">50</td>
-<td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
+<td align="right">0</td>
 <td align="right">1</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">100</td>
 <td align="right">1</td>
-<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
 <td align="right">1</td>
 <td align="right">0</td>
-<td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">300</td>
 <td align="right">1</td>
-<td align="right">0</td>
+<td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -1179,7 +1054,7 @@ kable(x, &quot;pipe&quot;, caption=&quot;Approval Matrix for Location Contaminat
 <tr class="odd">
 <td align="right">500</td>
 <td align="right">1</td>
-<td align="right">0</td>
+<td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
@@ -1213,8 +1088,8 @@ kable(x, &quot;pipe&quot;, caption=&quot;Approval Matrix for Location Contaminat
 </table>
 </div>
 </div>
-<div id="section-3-results" class="section level1">
-<h1>Section 3: Results</h1>
+<div id="section-2-results" class="section level1">
+<h1>Section 2: Results</h1>
 <div id="table-2" class="section level3">
 <h3>Table 2</h3>
 <pre class="r"><code>titles &lt;- c(&quot;n&quot;, &quot;SW&quot;, &quot;KS&quot;, &quot;LL&quot;, &quot;AD&quot;, &quot;DP&quot;, &quot;JB&quot;, &quot;CVM&quot;, &quot;CSQ&quot;)
@@ -6905,65 +6780,26 @@ CSQ
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>### Symmetric Short-tailed Distributions
-# Used in Table-2:
-# 1. Uniform: U(0,1): 
-# 2. Tukey(0,1,1.25,1.25): 
-# 3. Trunc(−2,2):
-
-# Used in Figure-1:
-# 1. GLD(0,1,0.75,0.75)
-# 2. GLD(0,1,0.5,0.5)
-# 3. GLD(0,1,0.25,0.25)
-
-
-### Symmetric long-tailed distributions:
-## Used in figure-2:
-## 1. GLD(0,1,−0.10,−0.10)
-## 2. GLD(0,1,−0.15,−0.15)
-# 3. Scale Contaminated Normal: ScConN(0.05,3)
-
-# Used in Table-3:
-# 1. t(15)
-# 2. Logistic
-# 3. Laplace
-
-
-### Asymmetric distributions:
-
-## Used in Figure-3:
-## 1. CSQ(4)
-## 2. Beta(2,1)
-
-## Used in Table-4:
-## 1. Weibull(3,1)
-## 2. Lognormal
-## 3. Location Contaminated Normal: LoConN(0.2,3) 
-
-
-### 4) Talk about the power of each test and how it is defined 
-
-## Section-2: Results
-  ## Grabbing critical values
-  ## Writing the code for the tests
-    ## Specify difficulties with the tests and any changes made.
-  ## Introduce by order in the paper (the table/figures) and then comment on        the difficulties associated with each test and distribution. 
-      ## Make a comment on anything that did not match.
-  ## Summarize the results of the paper
-  
-## Section-3: Summary
-  ## Talk about our own insights, whether we agree with the paper&#39;s conclusion,   and the highlights of what we learned while trying to replicate the results o   of the paper. 
-## Section-4: Future Work
-  ## Discuss how this could apply to future work, both in industry and academia.</code></pre>
 </div>
-</div>
-<div id="section-4-summary" class="section level1">
-<h1>Section 4: Summary</h1>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
 <p>Research paper: Yap, Bee Wah, and Chiaw Hock Sim. “Comparisons of various types of normality tests.” Journal of Statistical Computation and Simulation 81.12 (2011): 2141-2155.</p>
 <p>Book: Rizzo, Maria L. Statistical computing with R. CRC Press, 2019.</p>
+<p>Packages:</p>
+<p>R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+<p>Diethelm Wuertz, Tobias Setz and Yohan Chalabi (2020). fBasics: Rmetrics - Markets and Basic Statistics. R package version 3042.89.1. <a href="https://CRAN.R-project.org/package=fBasics" class="uri">https://CRAN.R-project.org/package=fBasics</a></p>
+<p>Juergen Gross and Uwe Ligges (2015). nortest: Tests for Normality. R package version 1.0-4. <a href="https://CRAN.R-project.org/package=nortest" class="uri">https://CRAN.R-project.org/package=nortest</a></p>
+<p>Joseph L. Gastwirth, Yulia R. Gel, W. L. Wallace Hui, Vyacheslav Lyubchich, Weiwen Miao and Kimihiro Noguchi (2020). lawstat: Tools for Biostatistics, Public Policy, and Law. R package version 3.4. <a href="https://CRAN.R-project.org/package=lawstat" class="uri">https://CRAN.R-project.org/package=lawstat</a></p>
+<p>Robert King, Benjamin Dean, Sigbert Klinke and Paul van Staden (2021). gld: Estimation and Use of the Generalised (Tukey) Lambda Distribution. R package version 2.6.3. <a href="https://CRAN.R-project.org/package=gld" class="uri">https://CRAN.R-project.org/package=gld</a></p>
+<p>Thomas W. Yee (2015). Vector Generalized Linear and Additive Models: With an Implementation in R. New York, USA: Springer.</p>
+<p>Thomas W. Yee and C. J. Wild (1996). Vector Generalized Additive Models. Journal of Royal Statistical Society, Series B, 58(3), 481-493.</p>
+<p>Olaf Mersmann, Heike Trautmann, Detlef Steuer and Björn Bornkamp (2018). truncnorm: Truncated Normal Distribution. R package version 1.0-8. <a href="https://CRAN.R-project.org/package=truncnorm" class="uri">https://CRAN.R-project.org/package=truncnorm</a></p>
+<p>H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.</p>
+<p>Hao Zhu (2021). kableExtra: Construct Complex Table with ‘kable’ and Pipe Syntax. R package version 1.3.4. <a href="https://CRAN.R-project.org/package=kableExtra" class="uri">https://CRAN.R-project.org/package=kableExtra</a></p>
+<p>Yihui Xie (2021). knitr: A General-Purpose Package for Dynamic Report Generation in R. R package version 1.33.</p>
+<p>Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and Hall/CRC. ISBN 978-1498716963</p>
+<p>Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595</p>
 <pre class="r"><code>citation(package = &quot;stats&quot;)</code></pre>
 <pre><code>## 
 ## The &#39;stats&#39; package is part of R.  To cite R in publications use:
@@ -7127,7 +6963,7 @@ CSQ
 ##     note = {R package version 1.0-8},
 ##     url = {https://CRAN.R-project.org/package=truncnorm},
 ##   }</code></pre>
-<pre class="r"><code>citation(package=&quot;grDevices&quot;)</code></pre>
+<pre class="r"><code>citation(package = &quot;grDevices&quot;)</code></pre>
 <pre><code>## 
 ## The &#39;grDevices&#39; package is part of R.  To cite R in publications use:
 ## 
@@ -7149,9 +6985,58 @@ CSQ
 ## We have invested a lot of time and effort in creating R, please cite it
 ## when using it for data analysis. See also &#39;citation(&quot;pkgname&quot;)&#39; for
 ## citing R packages.</code></pre>
-</div>
-<div id="appendix" class="section level1">
-<h1>Appendix</h1>
+<pre class="r"><code>citation(package = &quot;ggplot2&quot;)</code></pre>
+<pre><code>## 
+## To cite ggplot2 in publications, please use:
+## 
+##   H. Wickham. ggplot2: Elegant Graphics for Data Analysis.
+##   Springer-Verlag New York, 2016.
+## 
+## A BibTeX entry for LaTeX users is
+## 
+##   @Book{,
+##     author = {Hadley Wickham},
+##     title = {ggplot2: Elegant Graphics for Data Analysis},
+##     publisher = {Springer-Verlag New York},
+##     year = {2016},
+##     isbn = {978-3-319-24277-4},
+##     url = {https://ggplot2.tidyverse.org},
+##   }</code></pre>
+<pre class="r"><code>citation(package = &quot;kableExtra&quot;)</code></pre>
+<pre><code>## 
+## To cite package &#39;kableExtra&#39; in publications use:
+## 
+##   Hao Zhu (2021). kableExtra: Construct Complex Table with &#39;kable&#39; and
+##   Pipe Syntax. R package version 1.3.4.
+##   https://CRAN.R-project.org/package=kableExtra
+## 
+## A BibTeX entry for LaTeX users is
+## 
+##   @Manual{,
+##     title = {kableExtra: Construct Complex Table with &#39;kable&#39; and Pipe Syntax},
+##     author = {Hao Zhu},
+##     year = {2021},
+##     note = {R package version 1.3.4},
+##     url = {https://CRAN.R-project.org/package=kableExtra},
+##   }</code></pre>
+<pre class="r"><code>citation(package = &quot;knitr&quot;)</code></pre>
+<pre><code>## 
+## To cite the &#39;knitr&#39; package in publications use:
+## 
+##   Yihui Xie (2021). knitr: A General-Purpose Package for Dynamic Report
+##   Generation in R. R package version 1.33.
+## 
+##   Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition.
+##   Chapman and Hall/CRC. ISBN 978-1498716963
+## 
+##   Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible
+##   Research in R. In Victoria Stodden, Friedrich Leisch and Roger D.
+##   Peng, editors, Implementing Reproducible Computational Research.
+##   Chapman and Hall/CRC. ISBN 978-1466561595
+## 
+## To see these entries in BibTeX format, use &#39;print(&lt;citation&gt;,
+## bibtex=TRUE)&#39;, &#39;toBibtex(.)&#39;, or set
+## &#39;options(citation.bibtex.max=999)&#39;.</code></pre>
 </div>
 
 
