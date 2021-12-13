@@ -1,6 +1,8 @@
 library(ggplot2)
 
-#funtion to produce graph when power file is inputted and title (distribution) is specified (both arguments in quotations)
+# Kara's homebrew function to make a graph given the filename and distribution. Code primarily written by Kara
+# with some help from Jeremiah. 
+
 graph <- function(filename, distribution){
   table <- read.table(filename)
   data <- data.frame(table)
