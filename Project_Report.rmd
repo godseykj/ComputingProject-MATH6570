@@ -17,21 +17,71 @@ output:
   
 Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests.
 
-1. Shapiro-Wilk test(SW test)
-2. Kolmogorov-Smirnov test(KS test)
-3. Lilliefors test(LL test)
-4. Cramer-Von mises test (CVM test)
-5. Pearson's Chi-Squared test (CSQ test)
-6. Anderson-Darling test (AD test)
-7. Jarque-Bera test (JB test) 
-8. D’Agostino–Pearson Omnibus test (DP test)
+## Tests
+
+1. **Shapiro-Wilk test (SW test)**
+
+    $$SW = \frac{\left[\sum_{i=1}^n a_i Y_i\right]^2}{\sum_{i=1}^n (Y_i - \bar{Y})^2}$$
+    
+    Small values of $SW$ lead to the rejection of normality; a value of one indicates normality of the data.
+    
+2. **Kolmogorov-Smirnov test (KS test)**
+    
+    $$KS^{+} = \underset{x}{sup} [F^{*}(x) - F_n (x)] \quad \quad KS^{-} = \underset{x}{sup} [F_n(x)-F^{*}(x)]$$
+    
+    $$KS = max(KS^{+}, KS^{-})$$
+    
+    Large values of $KS$ indicate non-normality of the sample.
+    
+3. **Lilliefors test (LL test)**
+
+    The LL test statistic is similar to the KS test statistic except $\mu$ and $\sigma$ are replaced by the sample mean and sample standard deviation.
+    
+    $$LL^{+} = \underset{x}{sup} [F^{*}(x) - F_n (x)] \quad \quad LL^{-} = \underset{x}{sup} [F_n(x)-F^{*}(x)]$$
+    
+    $$LL = max(LL^{+}, LL^{-})$$
+    
+4. **Cramer-Von mises test (CVM test)**
+
+    The Cramer-von Mises test can be defined by $$nw^2 = n \int_{-\infty}^{\infty} [F(x)-F^{*}(x)]^2 dF(x)$$
+    
+    The CVM test can be written (assuming that $X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$ is an ordered sample of size $n$) as
+    
+    $$CVM=\frac{1}{12n} + \sum_{i=1}^n \left(Z_i - \frac{2i-1}{2n}\right)^2 $$
+    
+    where $Z_i = \Phi\left(\frac{X_{(i)}-\bar X}{S}\right)$, $\bar X = \frac{\sum_{i=1}^n X_i}{n}$, $S^2 = \frac{\sum_{i=1}^n (X_i - \bar X)^2}{n-1}$, and $\Phi(x)$ is the standard hypothesized normal distribution of the null hypothesis.
+    
+5. **Anderson-Darling test (AD test)**
+    
+    $$AD = n \int_{-\infty}^{\infty} [F(x)-F^{*}(x)]^2 \psi (F(x)) dF(x)$$
+    
+    Assuming that $X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$ is an ordered sample of size $n$, the statistic can be rewritten as
+    
+    $$AD = -\sum \left[\frac{(2i-1)(\log P_i + \log(1-P_{n+1-i}))}{n}\right] - n$$
+    
+    where $P_i$ is the CDF of the specified distribution and $\log$ is $\log_e$ . 
+    
+    To test normality, $P_i = \Phi(Y_{(i)})$ where $Y_{(i)} = \frac{X_{(i)}-\bar X}{S}$ and $\bar X$ and $S$ are the sample mean and sample standard deviation, respectively.
+    
+6. **Pearson's Chi-Squared test (CSQ test)** 
+7. **Jarque-Bera test (JB test)**
+
+    $$JB = n\left(\frac{(\sqrt{b_1})^2}{6} + \frac{(b_2 - 3)^2}{24} \right)$$
+    
+    where $\sqrt{b_1}$ is the skewness and $b_2$ is the kurtosis.
+    
+    Large valuse of the skewness and kurtosis that are far from 3 lead to the rejection of the null hypothesis of normality.
+    
+8. **D’Agostino–Pearson Omnibus test (DP test)**
+
+    $$DP = Z^2 (\sqrt{b_1}) + Z^2 (b_2)$$
+    
+    where $Z(\sqrt{b_1})$, $Z(b_2)$ are the normal approximations to $\sqrt{b_1}$ and $b_2$.
 
 Hypothesis testing for Normality assumption(whether the observed sample comes from a population with a normal distribution)
 
 **H0**: Observed sample comes from a population with a normal distribution (OR Non-normal distribution comes from the normal distribution family) (OR Random sample of n independent observations come from a population with a normal $N(\mu,\sigma^2)$ ) )
-**H1**: Observed sample does not come from a population with a normal distribution (or Non-normal distribution does not come from the normal distribution family.) (OR Random sample of n independent observations does not come from a population with a normal $N(\mu,\sigma^2)$ ))
-
-Criteria to do comparison among the 8 normality tests:
+**H1**: Observed sample does not come from a population with a normal distribution (or Non-normal distribution does not come from the normal distribution family.) (OR Random sample of n independent observations does not come from a population with a normal $N(\mu,\sigma^2)$ )) criteria to do comparison among the 8 normality tests:
 1. They all should have the same probability of rejecting the Null Hypothesis when the distribution is truly normal(Same Type-I error rate(significance level: $\alpha$ ). $\alpha=0.05$ is considered for all simulation results.
 
 ## Random variates generated from Standard Normal Distributions
@@ -82,7 +132,7 @@ omnibus.test <- function(x){
 ```
 
 
-## Random Variates generated from alternative(non-normal) distributions
+## Random Variates generated from alternative (non-normal) distributions
 1. 10,000 simulated samples for particular sample size were generated from a given non-normal distributions. We have used inbuilt R functions for some distributions and created the home-made functions for some distributions. Then the Test Statistic values were obtained from them.
 2. For a particular sample size, the 10,000 generated test statistics were sorted to generate an empirical distribution
 3. Steps 3-7 are similar with the steps 3-7 mentioned for generating random variates from standard normal distributions.  
@@ -92,16 +142,11 @@ omnibus.test <- function(x){
 
 1. **Uniform- U(0,1)**: R function `runif` is used to generate the random variates from uniform distribution.  
 
-2. **Generalised Lamda Distribution(GLD(lambda1, lambda2, lambda3, lambda4))**: R function `gld.moments` is used to generate the random variates for this  distribution for given paramater values.
+2. **Generalized Lambda Distribution ($\lambda_1$, $\lambda_2$, $\lambda_3$, $\lambda_4$)**: R function `rgl` is used to generate the random variates for this  distribution for given paramater values. Additionally, the function `gld.moments` is used to compute the theoretical mean and variance.
 
-lambda 1 - location parameter, lambda 2 - scale parameter, 
-lambda 3 - first shape parameter, lambda 4 - second shape
+3. **Trunc(a,b)**: R function `rtruncnorm` is used to generate the random deviates for this distribution.
 
-3. **Tukey(lambda1, lambda2, lambda3, lambda4)**: This is a type of generalized lamda distribution. So, R function `gld.moments` is used to generate the random variates.
- 
-4. **Trunc(a,b)**: R function `rtruncnorm` is used to generate the random deviates for this distribution.
-
-5. **Scale Contaminated Normal: ScConN(p,b):** We have created below function to generate the random variates from this distribution.
+4. **Scale Contaminated Normal: ScConN(p,b):** We have created the function below to generate the random variates from this distribution.
 
 ```{r}
 rScConN <- function(n,p,b){
@@ -114,19 +159,19 @@ rScConN <- function(n,p,b){
 ```
 
 
-6. **t(15)**: R function `rt` is used to generate the random deviates from this distribution. 
+5. **t(15)**: R function `rt` is used to generate the random deviates from this distribution. 
 
-7. **Logistic**: R function `rlogis` is used to generate random deviates from this distribution.
+6. **Logistic**: R function `rlogis` is used to generate random deviates from this distribution.
  
-8. **Laplace**: R function `rlaplace` is used to generate random deviates from this distribution.
+7. **Laplace**: R function `rlaplace` is used to generate random deviates from this distribution.
 
-9. **Chi()**: R function `rchisq` is used to generate random deviates from this distribution.
+8. **Chi()**: R function `rchisq` is used to generate random deviates from this distribution.
 
-10. **Beta**: R function `rbeta` is used to generate random deviates from this distribution.
+9. **Beta**: R function `rbeta` is used to generate random deviates from this distribution.
 
-11. **Weibull**: R function `rweibull` is used to generate random deviates from this distribution.
+10. **Weibull**: R function `rweibull` is used to generate random deviates from this distribution.
 
-12. **Lognormal**: We have created below function to generate the random variates from this distribution.
+11. **Lognormal**: We have created the function below to generate the random variates from this distribution.
 
 ```{r}
 rlog <- function(n){
@@ -135,7 +180,7 @@ rlog <- function(n){
 }
 ```
 
-13. **Location Contaminated Normal**: We have created below function to generate the random variates from this distribution.
+12. **Location Contaminated Normal**: We have created the function below to generate the random variates from this distribution.
 
 ```{r}
 rLoConN <- function(n,p,a){
@@ -154,9 +199,13 @@ library(knitr)
 library(dplyr)
 ```
 
+---
+
 # Section 2: Results
 
 ## Process
+
+In order to replicate the paper, we employed the following process. First, we computed critical values for each test. Next, we performed Monte Carlo simulations with each alternative distribution. For each distribution, 10,000 simulations were conducted and test statistics were computed in each iteration. Comparing each test statistic to the critical value, we then computed the power for each test with the given alternative distribution. Finally, we display these results in graph or table form to compare with the results found in the paper. For our power comparison, we checked each of our estimates to see if it was within two standard deviations of the estimate given in the paper.
 
 ```{r include=F}
 library(nortest)
@@ -204,6 +253,8 @@ omnibus.test <- function(x){
 ```
 
 ### Obtaining the critical values
+
+To obtain the critical values, we generate 50,000 samples from a normal distribution and compute the test statistic for each test. The 50,000 test statistics are then ordered to create an empirical distribution. The critical value then corresponds to the $\alpha$ quantile (left-tailed test) or $1-\alpha$ quantile (right-tailed test). This process is repeated for each sample size. The result is a single critical value for each test at each sample size; these critical values are shown in the table below.
 
 ```{r eval=FALSE}
 alpha <- 0.05
@@ -272,6 +323,8 @@ kable(x,"pipe", caption="Critical Value Matrix")
 
 
 ### Evaluating the Power of each distribution
+
+To calculate the power of each test given the distribution, we wrote a function called `getpower`. The function takes as inputs the theoretical mean and variance of the distribution, the r function used to generate a sample from the distribution, and any additional parameters that the generation function requires, such as $\alpha$ and $\beta$ for the weibull distribution. The theoretical mean and variance are required for the KS test, since we standardize the data prior to passing it to the KS test function.
 
 ```{r eval=FALSE}
 # Power Function - Found in powerfunction.r
@@ -345,6 +398,8 @@ getpower <- function(distmean, distvar, dist_function, p1=NULL, p2=NULL, p3=NULL
 }
 ```
 
+This is an example of the `getpower` function used to find the power of the GLD (0, 1, 0.75, 0.75) distribution. The `gld.moments` function from the `GLD` package is used to compute the theoretical mean and variance, the first two arguments of the `getpower` function. 
+
 ```{r eval=FALSE}
 lam1 <- 0; lam2 <- 1; lam3 <- 0.75; lam4 <- 0.75
 gldmean <- gld.moments(c(lam1,lam2,lam3,lam4))[1]
@@ -352,38 +407,16 @@ gldvar <- gld.moments(c(lam1,lam2,lam3,lam4))[2]
 GLD1a <- getpower(gldmean, gldvar, "rgl",lam1, lam2, lam3, lam4)
 ```
 
+The output of the `getpower` function is a matrix of the power for each test and sample size. After running the function, we saved the matrix to a csv file. Below is a table of the power for the GLD (0, 1, 0.75, 0.75) distribution that was used above as a demonstration.
+
 ```{r}
 y <- read.table("Figure1/gld-a.csv")
 kable(y, "pipe", caption="GLD(0,1,0.75,0.75) power")
 ```
 
-
-### Extra Functions for Generation of Random Variables
-
-```{r eval=FALSE}
-# Random Variate Generation for distributions without a function
-
-rScConN <- function(n,p,b){
-  k <- runif(n)
-  k <- ifelse(k <= p, 1, 0)
-  ScConNdist <- k*rnorm(n, mean = 0, sd=b) + (1-k)*rnorm(n)
-  ScConNdist
-}
-
-rLoConN <- function(n,p,a){
-  k <- runif(n)
-  k <- ifelse(k <= p, 1, 0)
-  LoConNdist <- k*rnorm(n, mean = a, sd=1) + (1-k)*rnorm(n)
-  LoConNdist
-}
-
-rlog <- function(n){
-  x <- rnorm(n,0,1)
-  dist <- exp(x)
-}
-```
-
 ### Power Function in Action
+
+Listed below is the code that was run for each distribution to calculate power.
 
 ```{r eval=FALSE}
 # Power calculation for every distribution
@@ -501,6 +534,8 @@ betapower <- getpower(betamean, betavar, "rbeta",alpha, beta)
 
 ### Function to Graph
 
+Next, we wrote a function to graph the power curve using `ggplot`. The function takes as input the filename of the csv file where the power matrix is saved as well as the name of the distribution as a character which will serve as the title of the graph. The color coding of the tests should align closely with the color coding found in the paper.
+
 ```{r eval=FALSE}
 # Graphing the power curves for the necessary distributions - Found in powertable.r
 
@@ -534,7 +569,11 @@ graph <- function(filename, distribution){
     theme(plot.title = element_text(hjust = 0.5)) +
     scale_color_manual(values=colors)
 }
+```
 
+The code below was used to replicate all the graphs found in the paper.
+
+```{r eval=FALSE}
 graph("Figure1/gld-a.csv", "GLD(0,1,0.75,0.75)")
 graph("Figure1/gld-b.csv", "GLD(0,1,0.5,0.5)")
 graph("Figure1/gld-c.csv", "GLD(0,1,0.25,0.25)")
@@ -544,6 +583,8 @@ graph("Figure2/gld-c-figure2.csv", "GLD(0,1,−0.15,−0.15)")
 graph("Figure3/chi.csv", "CHI(4df)")
 graph("Figure3/beta.csv", "BETA(2,1)")
 ```
+
+This is an example of the graph produced for the GLD (0, 1, 0.75, 0.75) distribution.
 
 ![](Figure1/fig1plotA.jpeg)
 
@@ -615,7 +656,9 @@ kable(x, "pipe", caption="Approval Matrix for Location Contaminated Normal")
 ```
 
 
-## Tables and Graphs
+## Tables
+
+Given below are several tables. The tables on the left are those from the paper. The tables on the right are the power estimates that we produced. In each table, a random estimate was highlighted in red to allow for a quick comparison. There were three tables of power estimates given in the paper: Table 2, Table 3, and Table 4. The tables below are grouped accordingly.
 
 ### Table 2
 
@@ -644,7 +687,7 @@ y %>%
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/2_2.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -667,7 +710,7 @@ y %>%
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/2_3.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -692,7 +735,7 @@ y %>%
 
 ### Table 3
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/3_1.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -715,7 +758,7 @@ y %>%
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/3_2.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -738,7 +781,7 @@ y %>%
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/3_3.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -763,7 +806,7 @@ y %>%
 
 ### Table 4
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/4_1.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -786,7 +829,7 @@ y %>%
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/4_2.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -809,7 +852,7 @@ y %>%
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
-```{r}
+```{r echo=FALSE}
 x <- read.table("TablesFromPaper/4_3.csv")
 colnames(x) <- titles
 sizes <- x$n
@@ -831,6 +874,10 @@ y %>%
     kable_styling(full_width = F, position = "right", font_size=10) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
+
+## Graphs
+  
+The following graphs were produced for visual comparison with the findings of the paper. The graphs from the paper are given on the left, while our power curves are shown on the right. There were three figures of power curves given in the paper: Figure 1, Figure 2, and Figure 3. The graphs below are grouped accordingly.
 
 ### Figure 1
 
