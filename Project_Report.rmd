@@ -28,19 +28,19 @@ Normal distributions are most common distributions used in statistical theory an
 
 Hypothesis testing for Normality assumption(whether the observed sample comes from a population with a normal distribution)
 
-**H0**: Observed sample comes from a population with a normal distribution (OR Non-normal distribution comes from the normal distribution family) (OR Random sample of n independent observations come from a population with a normal $$N(\mu,{\sigma}^2) $$) )
-**H1**: Observed sample does not come from a population with a normal distribution (or Non-normal distribution does not come from the normal distribution family.) (OR Random sample of n independent observations does not come from a population with a normal $$N(\mu,{\sigma}^2) $$))
+**H0**: Observed sample comes from a population with a normal distribution (OR Non-normal distribution comes from the normal distribution family) (OR Random sample of n independent observations come from a population with a normal $N(\mu,\sigma^2)$ ) )
+**H1**: Observed sample does not come from a population with a normal distribution (or Non-normal distribution does not come from the normal distribution family.) (OR Random sample of n independent observations does not come from a population with a normal $N(\mu,\sigma^2)$ ))
 
 Criteria to do comparison among the 8 normality tests:
-1. They all should have the same probability of rejecting the Null Hypothesis when the distribution is truly normal(Same Type-I error rate(significance level: $$\alpha$$ ). Alpha=0.05 is considered for all simulation results.
+1. They all should have the same probability of rejecting the Null Hypothesis when the distribution is truly normal(Same Type-I error rate(significance level: $\alpha$ ). $\alpha=0.05$ is considered for all simulation results.
 
 ## Random variates generated from Standard Normal Distributions
 1. 50,000 simulated samples for particular sample size are generated using `rnorm` function with mean=0 and standard deviation=1; and then the Test Statistic values are obtained from them.
 2. For a particular sample size, the 50,000 generated test statistics are sorted to generate an empirical distribution
 3. quantile function is used to get the sample quantile from the generated empirical distribution for the mentioned probability. That value of sample quantile is used as the Critical value. 
-4. Left-tailed test: **SW test** and Critical values are the $$100(\alpha)$$th percentile of the empirical distribution
-5. For Right-tailed tests: **AD, LL, CVM, DP,JB and CSQ tests** : and  Two-tailed test: **KS test**: , Critical values are the $$100(1-\alpha)$$th percentiles of the empirical distribution
-6. For **CSQ test**, we used different approach than paper to compute the number of bins. We used the R function nclass.scott(x) to compute it. 
+4. Left-tailed test: **SW test** and Critical values are the $100(\alpha)$th percentile of the empirical distribution
+5. For Right-tailed tests: **AD, LL, CVM, DP,JB and CSQ tests** : and  Two-tailed test: **KS test**: , Critical values are the $100(1-\alpha)$th percentiles of the empirical distribution
+6. For **CSQ test**, we used different approach than paper to compute the number of bins. We used the R function `nclass.scott(x)` to compute it. 
 7. For **DP Omnibus test**, we have done the modification in original source code, so it can consider the sample size less than 20 as well.
 
 ```{r}
@@ -154,7 +154,9 @@ library(knitr)
 library(dplyr)
 ```
 
-# Section 2: Process
+# Section 2: Results
+
+## Process
 
 ```{r include=F}
 library(nortest)
@@ -201,7 +203,7 @@ omnibus.test <- function(x){
 }
 ```
 
-## Obtaining the critical values
+### Obtaining the critical values
 
 ```{r eval=FALSE}
 alpha <- 0.05
@@ -269,7 +271,7 @@ kable(x,"pipe", caption="Critical Value Matrix")
 ```
 
 
-## Evaluating the Power of each distribution
+### Evaluating the Power of each distribution
 
 ```{r eval=FALSE}
 # Power Function - Found in powerfunction.r
@@ -356,7 +358,7 @@ kable(y, "pipe", caption="GLD(0,1,0.75,0.75) power")
 ```
 
 
-## Extra Functions for Generation of Random Variables
+### Extra Functions for Generation of Random Variables
 
 ```{r eval=FALSE}
 # Random Variate Generation for distributions without a function
@@ -381,7 +383,7 @@ rlog <- function(n){
 }
 ```
 
-## Power Function in Action
+### Power Function in Action
 
 ```{r eval=FALSE}
 # Power calculation for every distribution
@@ -497,7 +499,7 @@ betavar <- (alpha*beta) / (((alpha+beta)^2)*(alpha+beta+1))
 betapower <- getpower(betamean, betavar, "rbeta",alpha, beta)
 ```
 
-## Function to Graph
+### Function to Graph
 
 ```{r eval=FALSE}
 # Graphing the power curves for the necessary distributions - Found in powertable.r
@@ -545,7 +547,7 @@ graph("Figure3/beta.csv", "BETA(2,1)")
 
 ![](Figure1/fig1plotA.jpeg)
 
-## Approval Matrix / Error Analysis
+### Approval Matrix / Error Analysis
 
 ```{r eval=FALSE}
 # Tables were made based on outputs from power function using knitr::kable. - Found in Project_Report.rmd
@@ -613,7 +615,7 @@ kable(x, "pipe", caption="Approval Matrix for Location Contaminated Normal")
 ```
 
 
-# Section 3: Results
+## Tables and Graphs
 
 ### Table 2
 
@@ -868,7 +870,7 @@ knitr::include_graphics(c("GraphsFromPaper/fig3A.jpg","Figure3/fig3plotA.jpeg"))
 knitr::include_graphics(c("GraphsFromPaper/fig3B.jpg","Figure3/fig3plotB.jpeg"))
 ```
 
-## Accuracy 
+## Error Analysis 
 
 ```{r echo=FALSE}
 Distribution <- c("Uniform(0,1)", "GLD(0,1,1.25,1.25)","Trunc(-2,2)","t(15)","Logistic","Laplace","Weibull","Lognormal","LoConN(0.2,3)")
@@ -960,6 +962,41 @@ Yap, Bee Wah, and Chiaw Hock Sim. "Comparisons of various types of normality tes
 
 Book:
 Rizzo, Maria L. Statistical computing with R. CRC Press, 2019.
+
+Packages:
+
+R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
+URL https://www.R-project.org/.
+
+Diethelm Wuertz, Tobias Setz and Yohan Chalabi (2020). fBasics: Rmetrics - Markets and Basic Statistics. R package version 3042.89.1.
+https://CRAN.R-project.org/package=fBasics
+
+Juergen Gross and Uwe Ligges (2015). nortest: Tests for Normality. R package version 1.0-4. https://CRAN.R-project.org/package=nortest
+
+Joseph L. Gastwirth, Yulia R. Gel, W. L. Wallace Hui, Vyacheslav Lyubchich, Weiwen Miao and Kimihiro Noguchi (2020). lawstat: Tools for Biostatistics, Public Policy, and Law. R package version 3.4.
+https://CRAN.R-project.org/package=lawstat
+
+Robert King, Benjamin Dean, Sigbert Klinke and Paul van Staden (2021). gld: Estimation and Use of the Generalised (Tukey) Lambda Distribution. R package version 2.6.3.
+https://CRAN.R-project.org/package=gld
+
+Thomas W. Yee (2015). Vector Generalized Linear and Additive Models: With an Implementation in R. New York, USA: Springer.
+
+Thomas W. Yee and C. J. Wild (1996). Vector Generalized Additive Models. Journal of Royal Statistical Society, Series B, 58(3), 481-493.
+
+Olaf Mersmann, Heike Trautmann, Detlef Steuer and Björn Bornkamp (2018). truncnorm: Truncated Normal Distribution. R package version 1.0-8. 
+https://CRAN.R-project.org/package=truncnorm
+
+H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+Hao Zhu (2021). kableExtra: Construct Complex Table with 'kable' and Pipe Syntax. R package version 1.3.4. 
+https://CRAN.R-project.org/package=kableExtra
+
+Yihui Xie (2021). knitr: A General-Purpose Package for Dynamic Report Generation in R. R package version 1.33.
+
+Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and Hall/CRC. ISBN 978-1498716963
+
+Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
+
 
 ```{r}
 citation(package = "stats")
