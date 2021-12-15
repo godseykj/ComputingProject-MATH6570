@@ -15,74 +15,51 @@ output:
 
 # Section 1: Introduction
   
-Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests.
-
+Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests. This report defers to "*Comparisons of various types of normality tests*" for the theory behind each test, while listing what aspect of normality each test assesses below.
+  
 ## Tests
 
 1. **Shapiro-Wilk test (SW test)**
-
-    $$SW = \frac{\left[\sum_{i=1}^n a_i Y_i\right]^2}{\sum_{i=1}^n (Y_i - \bar{Y})^2}$$
     
-    Small values of $SW$ lead to the rejection of normality; a value of one indicates normality of the data.
+    The Shapiro Wilks test assesses the normality by looking at the regression of the data. If the data is normally distributed so that $Y \sim N(\mu,\sigma^2)$, then when you apply a linear regression of your data such that $Y=\mu + \sigma X$, it should hold that $X\sim N(0,1)$. The SW test statistic is designed to be a measure of how far off $X$ is from following the standard normal distribution. The smaller your test statistic, the more likely it is for your data to not be normally distributed. 
     
 2. **Kolmogorov-Smirnov test (KS test)**
     
-    $$KS^{+} = \underset{x}{sup} [F^{*}(x) - F_n (x)] \quad \quad KS^{-} = \underset{x}{sup} [F_n(x)-F^{*}(x)]$$
-    
-    $$KS = max(KS^{+}, KS^{-})$$
-    
-    Large values of $KS$ indicate non-normality of the sample.
+    The Kolmogorov Smirnov test is an empirical distribution test where $X_{(1)} < \cdots < X_{(n)}$ is an ordered random sample of size $n$ from $X$ with distribution $F(x)$. This means that it tests the EDF $F_n(x)$, in this case $F_n(x) = \frac{\text{no. of observations} \leq x}{n},  -\infty<x<\infty$. This test requires specific information about the some distribution you want to compare your data to. Define this as $F^*(x)$, with specified parameters, in this case we use the normal distribution. The test statistic is defined differently depending on your null hypothesis, but in all methods you take the supremum of the difference between the defined $F_n(x)$ and $F^*(x)$. The larger your value of test statistic, the less normal your data is.  
     
 3. **Lilliefors test (LL test)**
 
-    The LL test statistic is similar to the KS test statistic except $\mu$ and $\sigma$ are replaced by the sample mean and sample standard deviation.
-    
-    $$LL^{+} = \underset{x}{sup} [F^{*}(x) - F_n (x)] \quad \quad LL^{-} = \underset{x}{sup} [F_n(x)-F^{*}(x)]$$
-    
-    $$LL = max(LL^{+}, LL^{-})$$
+    The Lilliefors test statistic is similar to the KS test statistic except $\mu$ and $\sigma$ are replaced by the sample mean and sample standard deviation for the null distribution $F^*(x)$. The key difference is that the LL test uses an ordered normalized sample of $Z_i$ rather than an ordered random sample of the original $X_i$ values when calculating the test statistic. The method of the test is the same, so large test statistics indicate a non-normal distribution 
     
 4. **Cramer-Von mises test (CVM test)**
 
-    The Cramer-von Mises test can be defined by $$nw^2 = n \int_{-\infty}^{\infty} [F(x)-F^{*}(x)]^2 dF(x)$$
-    
-    The CVM test can be written (assuming that $X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$ is an ordered sample of size $n$) as
-    
-    $$CVM=\frac{1}{12n} + \sum_{i=1}^n \left(Z_i - \frac{2i-1}{2n}\right)^2 $$
-    
-    where $Z_i = \Phi\left(\frac{X_{(i)}-\bar X}{S}\right)$, $\bar X = \frac{\sum_{i=1}^n X_i}{n}$, $S^2 = \frac{\sum_{i=1}^n (X_i - \bar X)^2}{n-1}$, and $\Phi(x)$ is the standard hypothesized normal distribution of the null hypothesis.
+    The Cramer von Mises test is an alternative test to the KS and LL tests, also based on a random ordered sample. This test judges goodness of fit based on $F^*(x)$ based on the statistic as $nw^2=n\int_{-\infty}^{-\infty}[F_n(x)-F*(x)]^2dF(x)$. This statistic is a measure of the squared difference from the hypothesized distribution. There is an alternative way to calculate this, but this statistic highlights the similarity to the KS test.
     
 5. **Anderson-Darling test (AD test)**
     
-    $$AD = n \int_{-\infty}^{\infty} [F(x)-F^{*}(x)]^2 \psi (F(x)) dF(x)$$
+    The Anderson-Darling test is a modification of the CVM test. The goal of this modification is to provide more weight to that tails of the distribution and use the hypothesized $F^*(x)$ when calculating the critical values. As a result, the test tends to be more sensitive to small changes when compared to the CVM test and the critical values need to be recalculated depending on $F^*(x)$. This deviation from CVM can be seen best in the calculation of the test statistic $AD =n \int_{-\infty}^{\infty}[F_n(x)-F*(x)]^2 \Psi(F(x)dF(x)$, where $\Psi(F(x))$ is the weight that differentiates this test from the CVM test. 
     
-    Assuming that $X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$ is an ordered sample of size $n$, the statistic can be rewritten as
+6. **Pearson's Chi-Squared test (CSQ test)**
     
-    $$AD = -\sum \left[\frac{(2i-1)(\log P_i + \log(1-P_{n+1-i}))}{n}\right] - n$$
+    Pearson's Chi-Squared test is a goodness of fit test based on binning the observations. Thus, it is not recommended for assessing continuous distributions as it counts the observations in each bin and uses that count. If $O_j$ is the observations in each bin $j$, such that $j=1, 2, ..., c$ and $p^*_j$ be the probability of a random observation being in bin $j$, under the assumption the null hypothesis is true. Then, the expected number of observations in each bin is $E_j=p^*_jn$ for sample size $n$. The CSQ statistic is a measure of how $O_j$ deviates from the expected value. 
     
-    where $P_i$ is the CDF of the specified distribution and $\log$ is $\log_e$ . 
+    There is some maximum number of bins that can be calculated such that $c<M=4(2n^2/z^2_{\alpha})^{\frac{1}{5}}$. In Yap's paper, they ran the CSQ test over every value of possible c and reported the best result. This report applied the CSQ test for a specific value of c such that it followed Scott's Reference Rule. This rule is defined so that $c=2.15\sigma n^{-\frac{1}{5}}$. This change was made to be more realistic with how the working statistician would apply the CSQ test. 
     
-    To test normality, $P_i = \Phi(Y_{(i)})$ where $Y_{(i)} = \frac{X_{(i)}-\bar X}{S}$ and $\bar X$ and $S$ are the sample mean and sample standard deviation, respectively.
-    
-6. **Pearson's Chi-Squared test (CSQ test)** 
 7. **Jarque-Bera test (JB test)**
 
-    $$JB = n\left(\frac{(\sqrt{b_1})^2}{6} + \frac{(b_2 - 3)^2}{24} \right)$$
-    
-    where $\sqrt{b_1}$ is the skewness and $b_2$ is the kurtosis.
-    
-    Large valuse of the skewness and kurtosis that are far from 3 lead to the rejection of the null hypothesis of normality.
+    The Jarque-Bera test is a moments-based test that applies a Langrange multiplier on the Pearson family of distributions to test normality on the regression residuals. The test statistic is based on sample skewness and kurtosis, and follows a Chi-Squared distribution with 2 degrees of freedom. When the distribution of interest has a skewness of 0 and kurtosis of 3, the JB statistic is 0 which implies that the distribution of interest is normally distributed. The larger values of skewness and kurtosis leads to the reject of normality. 
     
 8. **D’Agostino–Pearson Omnibus test (DP test)**
 
-    $$DP = Z^2 (\sqrt{b_1}) + Z^2 (b_2)$$
-    
-    where $Z(\sqrt{b_1})$, $Z(b_2)$ are the normal approximations to $\sqrt{b_1}$ and $b_2$.
+    Similarly to the JB test, the D'Agostino Pearson Omnibus test is also a test of moments. Using the sample skewness and kurtosis, the test statistic calculates the normal approximations of these values and follows a Chi-Squared distribution with 2 degrees of freedom when the population is normally distributed. This test is good as it detects deviation from normality from either skewness or kurtosis. 
 
-Hypothesis testing for Normality assumption(whether the observed sample comes from a population with a normal distribution)
+Hypothesis testing for Normality Assumption:
 
-**H0**: Observed sample comes from a population with a normal distribution (OR Non-normal distribution comes from the normal distribution family) (OR Random sample of n independent observations come from a population with a normal $N(\mu,\sigma^2)$ ) )
-**H1**: Observed sample does not come from a population with a normal distribution (or Non-normal distribution does not come from the normal distribution family.) (OR Random sample of n independent observations does not come from a population with a normal $N(\mu,\sigma^2)$ )) criteria to do comparison among the 8 normality tests:
-1. They all should have the same probability of rejecting the Null Hypothesis when the distribution is truly normal(Same Type-I error rate(significance level: $\alpha$ ). $\alpha=0.05$ is considered for all simulation results.
+**H0**: The null hypothesis will be that the observed, random independent sample of size n or specified distribution comes from a population with a normal distribution. Mathematically, one would write this as $F(x) \sim N(\mu, \sigma^2)$
+
+**H1**: The alternative hypothesis will be that the observed, random independent sample of size n or specified distribution comes from a population with a normal distribution. Mathematically, one would write this as $F(x) \not\sim N(\mu, \sigma^2)$
+
+Note: It is important to keep the significance level $\alpha$ consistent between the tests when comparing them. Thus, all the tests will have the same probability of rejecting the null hypothesis when the distribution is normal, this means that each test will have the same Type I error. 
 
 ## Random variates generated from Standard Normal Distributions
 1. 50,000 simulated samples for particular sample size are generated using `rnorm` function with mean=0 and standard deviation=1; and then the Test Statistic values are obtained from them.
@@ -651,7 +628,7 @@ write.table(Approval, "Approval/LocConNorm.csv")
 
 
 ```{r}
-x <- read.table("Approval/LocConNorm.csv")
+x <- read.table("Approval/LocConNorm")
 kable(x, "pipe", caption="Approval Matrix for Location Contaminated Normal")
 ```
 
