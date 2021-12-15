@@ -7,10 +7,22 @@ output:
     code_folding: show
     theme: journal
     toc: yes
-    to _float: yes
+    toc_float: yes
   word_document:
     toc: yes
 ---
+
+```{r include=FALSE}
+library(nortest)
+library(lawstat)
+library(gld)
+library(VGAM)
+library(truncnorm)
+library(ggplot2)
+library(kableExtra)
+library(knitr)
+library(dplyr)
+```
 
 
 # Section 1: Introduction
@@ -21,107 +33,69 @@ Normal distributions are most common distributions used in statistical theory an
 
 1. **Shapiro-Wilk test (SW test)**
     
-    The Shapiro Wilks test assesses the normality by looking at the regression of the data. If the data is normally distributed so that $Y \sim N(\mu,\sigma^2)$, then when you apply a linear regression of your data such that $Y=\mu + \sigma X$, it should hold that $X\sim N(0,1)$. The SW test statistic is designed to be a measure of how far off $X$ is from following the standard normal distribution. The smaller your test statistic, the more likely it is for your data to not be normally distributed. 
+    The Shapiro Wilks test assesses the normality by looking at the regression of the data. If the data is normally distributed so that $Y \sim N(\mu,\sigma^2)$, then when a linear regression is applied to the data such that $Y=\mu + \sigma X$, it should hold that $X\sim N(0,1)$. The SW test statistic is designed to be a measure of how far off $X$ is from following the standard normal distribution. The smaller the test statistic, the more likely it is for the data to not be normally distributed.
+    
+    For this test we used the `shapiro.test` function from the `stats` package that is built in to R.
     
 2. **Kolmogorov-Smirnov test (KS test)**
     
-    The Kolmogorov Smirnov test is an empirical distribution test where $X_{(1)} < \cdots < X_{(n)}$ is an ordered random sample of size $n$ from $X$ with distribution $F(x)$. This means that it tests the EDF $F_n(x)$, in this case $F_n(x) = \frac{\text{no. of observations} \leq x}{n},  -\infty<x<\infty$. This test requires specific information about the some distribution you want to compare your data to. Define this as $F^*(x)$, with specified parameters, in this case we use the normal distribution. The test statistic is defined differently depending on your null hypothesis, but in all methods you take the supremum of the difference between the defined $F_n(x)$ and $F^*(x)$. The larger your value of test statistic, the less normal your data is.  
+    The Kolmogorov Smirnov test is an empirical distribution test where $X_{(1)} < \cdots < X_{(n)}$ is an ordered random sample of size $n$ from $X$ with distribution $F(x)$. This means that it tests the EDF $F_n(x)$, in this case $F_n(x) = \frac{\text{no. of observations} \leq x}{n},  -\infty<x<\infty$. This test requires specific information about some distribution with which the data is being compared. Define this as $F^*(x)$ with specified parameters; in this case we use the normal distribution. The test statistic is defined differently depending on the null hypothesis, but in all methods the supremum of the difference between the defined $F_n(x)$ and $F^*(x)$ is used in testing. The larger the value of the test statistic, the less normal the data is.  
+    
+    For this test we used the `ks.test` function from the  `stats` package that is built in to R.
     
 3. **Lilliefors test (LL test)**
 
-    The Lilliefors test statistic is similar to the KS test statistic except $\mu$ and $\sigma$ are replaced by the sample mean and sample standard deviation for the null distribution $F^*(x)$. The key difference is that the LL test uses an ordered normalized sample of $Z_i$ rather than an ordered random sample of the original $X_i$ values when calculating the test statistic. The method of the test is the same, so large test statistics indicate a non-normal distribution 
+    The Lilliefors test statistic is similar to the KS test statistic except $\mu$ and $\sigma$ are replaced by the sample mean and sample standard deviation for the null distribution $F^*(x)$. The key difference is that the LL test uses an ordered normalized sample of $Z_i$ rather than an ordered random sample of the original $X_i$ values when calculating the test statistic. The method of the test is the same, so large test statistics indicate a non-normal distribution.
+    
+    For this test we used the `lillie.test` function from the `nortest` package.
     
 4. **Cramer-Von mises test (CVM test)**
 
-    The Cramer von Mises test is an alternative test to the KS and LL tests, also based on a random ordered sample. This test judges goodness of fit based on $F^*(x)$ based on the statistic as $nw^2=n\int_{-\infty}^{-\infty}[F_n(x)-F*(x)]^2dF(x)$. This statistic is a measure of the squared difference from the hypothesized distribution. There is an alternative way to calculate this, but this statistic highlights the similarity to the KS test.
+    The Cramer von Mises test is an alternative test to the KS and LL tests, also based on a random ordered sample. This test judges goodness of fit based on $F^*(x)$ based on the statistic given by $$nw^2=n\int_{-\infty}^{-\infty}[F_n(x)-F*(x)]^2dF(x).$$ This statistic is a measure of the squared difference from the hypothesized distribution. There is an alternative way to calculate this, but this statistic highlights the similarity to the KS test.
+    
+    For this test we used the `cvm.test` function from the `nortest` package.
     
 5. **Anderson-Darling test (AD test)**
     
-    The Anderson-Darling test is a modification of the CVM test. The goal of this modification is to provide more weight to that tails of the distribution and use the hypothesized $F^*(x)$ when calculating the critical values. As a result, the test tends to be more sensitive to small changes when compared to the CVM test and the critical values need to be recalculated depending on $F^*(x)$. This deviation from CVM can be seen best in the calculation of the test statistic $AD =n \int_{-\infty}^{\infty}[F_n(x)-F*(x)]^2 \Psi(F(x)dF(x)$, where $\Psi(F(x))$ is the weight that differentiates this test from the CVM test. 
+    The Anderson-Darling test is a modification of the CVM test. The goal of this modification is to provide more weight to the tails of the distribution and use the hypothesized $F^*(x)$ when calculating the critical values. As a result, the test tends to be more sensitive to small changes when compared to the CVM test and the critical values need to be recalculated depending on $F^*(x)$. This deviation from CVM can be seen best in the calculation of the test statistic $$AD =n \int_{-\infty}^{\infty}[F_n(x)-F*(x)]^2 \Psi(F(x))dF(x),$$ where $\Psi(F(x))$ is the weight that differentiates this test from the CVM test. 
+    
+    For this test we used the `ad.test` function from the `nortest` package.
     
 6. **Pearson's Chi-Squared test (CSQ test)**
     
-    Pearson's Chi-Squared test is a goodness of fit test based on binning the observations. Thus, it is not recommended for assessing continuous distributions as it counts the observations in each bin and uses that count. If $O_j$ is the observations in each bin $j$, such that $j=1, 2, ..., c$ and $p^*_j$ be the probability of a random observation being in bin $j$, under the assumption the null hypothesis is true. Then, the expected number of observations in each bin is $E_j=p^*_jn$ for sample size $n$. The CSQ statistic is a measure of how $O_j$ deviates from the expected value. 
+    Pearson's Chi-Squared test is a goodness of fit test based on binning the observations. Thus, it is not recommended for assessing continuous distributions as it counts the observations in each bin and uses that count. Let $O_j$ be the observations in each bin $j$, such that $j=1, 2, ..., c$ and $p^*_j$ be the probability of a random observation being in bin $j$, under the assumption the null hypothesis is true. Then, the expected number of observations in each bin is $E_j=p^*_jn$ for sample size $n$. The CSQ statistic is a measure of how $O_j$ deviates from the expected value. 
     
-    There is some maximum number of bins that can be calculated such that $c<M=4(2n^2/z^2_{\alpha})^{\frac{1}{5}}$. In Yap's paper, they ran the CSQ test over every value of possible c and reported the best result. This report applied the CSQ test for a specific value of c such that it followed Scott's Reference Rule. This rule is defined so that $c=2.15\sigma n^{-\frac{1}{5}}$. This change was made to be more realistic with how the working statistician would apply the CSQ test. 
+    There is some maximum number of bins that can be calculated such that $c<M=4(2n^2/z^2_{\alpha})^{\frac{1}{5}}$. In Yap's paper, they ran the CSQ test over every value of possible c and reported the best result. This report applied the CSQ test for a specific value of $c$ such that it followed Scott's Reference Rule. This rule is defined so that $c=2.15\sigma n^{-\frac{1}{5}}$. This change was made to be more realistic with how the working statistician would apply the CSQ test. 
+    
+    For this test we used the `pearson.test` function from the `nortest` package.
     
 7. **Jarque-Bera test (JB test)**
 
     The Jarque-Bera test is a moments-based test that applies a Langrange multiplier on the Pearson family of distributions to test normality on the regression residuals. The test statistic is based on sample skewness and kurtosis, and follows a Chi-Squared distribution with 2 degrees of freedom. When the distribution of interest has a skewness of 0 and kurtosis of 3, the JB statistic is 0 which implies that the distribution of interest is normally distributed. The larger values of skewness and kurtosis leads to the reject of normality. 
     
+    For this test we used the `rjb.test` function from the `lawstat` package.
+    
 8. **D’Agostino–Pearson Omnibus test (DP test)**
 
     Similarly to the JB test, the D'Agostino Pearson Omnibus test is also a test of moments. Using the sample skewness and kurtosis, the test statistic calculates the normal approximations of these values and follows a Chi-Squared distribution with 2 degrees of freedom when the population is normally distributed. This test is good as it detects deviation from normality from either skewness or kurtosis. 
+    
+    For this test, we used a modified version of `dagoTest` from the `fBasics` package. The modifications as well as the code for the function is given in further detail in the Results section below.
 
-Hypothesis testing for Normality Assumption:
+### Hypothesis testing for Normality Assumption
 
 **H0**: The null hypothesis will be that the observed, random independent sample of size n or specified distribution comes from a population with a normal distribution. Mathematically, one would write this as $F(x) \sim N(\mu, \sigma^2)$
 
-**H1**: The alternative hypothesis will be that the observed, random independent sample of size n or specified distribution comes from a population with a normal distribution. Mathematically, one would write this as $F(x) \not\sim N(\mu, \sigma^2)$
+**H1**: The alternative hypothesis will be that the observed, random independent sample of size n or specified distribution comes from a population with a non-normal distribution. Mathematically, one would write this as $F(x) \not\sim N(\mu, \sigma^2)$
 
 Note: It is important to keep the significance level $\alpha$ consistent between the tests when comparing them. Thus, all the tests will have the same probability of rejecting the null hypothesis when the distribution is normal, this means that each test will have the same Type I error. 
 
-## Random variates generated from Standard Normal Distributions
-1. 50,000 simulated samples for particular sample size are generated using `rnorm` function with mean=0 and standard deviation=1; and then the Test Statistic values are obtained from them.
-2. For a particular sample size, the 50,000 generated test statistics are sorted to generate an empirical distribution
-3. quantile function is used to get the sample quantile from the generated empirical distribution for the mentioned probability. That value of sample quantile is used as the Critical value. 
-4. Left-tailed test: **SW test** and Critical values are the $100(\alpha)$th percentile of the empirical distribution
-5. For Right-tailed tests: **AD, LL, CVM, DP,JB and CSQ tests** : and  Two-tailed test: **KS test**: , Critical values are the $100(1-\alpha)$th percentiles of the empirical distribution
-6. For **CSQ test**, we used different approach than paper to compute the number of bins. We used the R function `nclass.scott(x)` to compute it. 
-7. For **DP Omnibus test**, we have done the modification in original source code, so it can consider the sample size less than 20 as well.
+## Distributions
 
-```{r}
-# Edited from dagoTest(x) in fBasics library. 
-omnibus.test <- function(x){
-  # Internal Function for D'Agostino Normality Test:
-  
-  # FUNCTION:
-  if (exists("complete.cases")) {
-    test = complete.cases(x)
-  } else {
-    test = !is.na(x)
-  }
-  x = x[test]
-  n = length(x)
-  meanX = mean(x)
-  s =  sqrt(mean((x-meanX)**2))
-  a3 = mean((x-meanX)**3)/s**3
-  a4 = mean((x-meanX)**4)/s**4
-  SD3 = sqrt(6*(n-2)/((n+1)*(n+3)))
-  SD4 = sqrt(24*(n-2)*(n-3)*n/((n+1)**2*(n+3)*(n+5)))
-  U3 = a3/SD3
-  U4 = (a4-3+6/(n+1))/SD4
-  b  = (3*(n**2+27*n-70)*(n+1)*(n+3))/((n-2)*(n+5)*(n+7)*(n+9))
-  W2 = sqrt(2*(b-1))-1
-  delta = 1/sqrt(log(sqrt(W2)))
-  a = sqrt(2/(W2-1))
-  Z3 = delta*log((U3/a)+sqrt((U3/a)**2+1))
-  B = (6*(n*n-5*n+2)/((n+7)*(n+9)))*sqrt((6*(n+3)*(n+5))/(n*(n-2)*(n-3)))
-  A = 6+(8/B)*((2/B)+sqrt(1+4/(B**2)))
-  jm = sqrt(2/(9*A))
-  pos = ((1-2/A)/(1+U4*sqrt(2/(A-4))))**(1/3)
-  Z4 = (1-2/(9*A)-pos)/jm
-  omni = Z3**2+Z4**2
-  
-  # Result:
-  omni
-}
-```
+1. **Uniform**: R function `runif` is used to generate the random variates from uniform distribution.  
 
+2. **Generalized Lambda Distribution**: R function `rgl` is used to generate the random variates for this  distribution for given paramater values. Additionally, the function `gld.moments` is used to compute the theoretical mean and variance. Each of these functions are from the `gld` package.
 
-## Random Variates generated from alternative (non-normal) distributions
-1. 10,000 simulated samples for particular sample size were generated from a given non-normal distributions. We have used inbuilt R functions for some distributions and created the home-made functions for some distributions. Then the Test Statistic values were obtained from them.
-2. For a particular sample size, the 10,000 generated test statistics were sorted to generate an empirical distribution
-3. Steps 3-7 are similar with the steps 3-7 mentioned for generating random variates from standard normal distributions.  
-9. The power of the normality test for the 10,000 simulated samples for particular sample size is the proportion of samples which the test rejected the null hypothesis of normality.
-
-### Type of the distributions:
-
-1. **Uniform- U(0,1)**: R function `runif` is used to generate the random variates from uniform distribution.  
-
-2. **Generalized Lambda Distribution ($\lambda_1$, $\lambda_2$, $\lambda_3$, $\lambda_4$)**: R function `rgl` is used to generate the random variates for this  distribution for given paramater values. Additionally, the function `gld.moments` is used to compute the theoretical mean and variance.
-
-3. **Trunc(a,b)**: R function `rtruncnorm` is used to generate the random deviates for this distribution.
+3. **Truncated Normal**: R function `rtruncnorm` is used to generate the random deviates for this distribution.
 
 4. **Scale Contaminated Normal: ScConN(p,b):** We have created the function below to generate the random variates from this distribution.
 
@@ -136,13 +110,13 @@ rScConN <- function(n,p,b){
 ```
 
 
-5. **t(15)**: R function `rt` is used to generate the random deviates from this distribution. 
+5. **t distribution**: R function `rt` is used to generate the random deviates from this distribution. 
 
 6. **Logistic**: R function `rlogis` is used to generate random deviates from this distribution.
  
 7. **Laplace**: R function `rlaplace` is used to generate random deviates from this distribution.
 
-8. **Chi()**: R function `rchisq` is used to generate random deviates from this distribution.
+8. **Chi Squared**: R function `rchisq` is used to generate random deviates from this distribution.
 
 9. **Beta**: R function `rbeta` is used to generate random deviates from this distribution.
 
@@ -157,7 +131,7 @@ rlog <- function(n){
 }
 ```
 
-12. **Location Contaminated Normal**: We have created the function below to generate the random variates from this distribution.
+12. **Location Contaminated Normal: LocConN(p,a)**: We have created the function below to generate the random variates from this distribution.
 
 ```{r}
 rLoConN <- function(n,p,a){
@@ -169,13 +143,6 @@ rLoConN <- function(n,p,a){
 
 ```
 
-
-```{r, include=FALSE}
-library(kableExtra)
-library(knitr)
-library(dplyr)
-```
-
 ---
 
 # Section 2: Results
@@ -184,14 +151,9 @@ library(dplyr)
 
 In order to replicate the paper, we employed the following process. First, we computed critical values for each test. Next, we performed Monte Carlo simulations with each alternative distribution. For each distribution, 10,000 simulations were conducted and test statistics were computed in each iteration. Comparing each test statistic to the critical value, we then computed the power for each test with the given alternative distribution. Finally, we display these results in graph or table form to compare with the results found in the paper. For our power comparison, we checked each of our estimates to see if it was within two standard deviations of the estimate given in the paper.
 
-```{r include=F}
-library(nortest)
-library(lawstat)
-library(gld)
-library(VGAM)
-library(truncnorm)
-library(ggplot2)
+In terms of test statistics, there were a few specifics that are of note. For the CSQ test, we used a different approach than the paper to compute the number of bins. Rather than looping through the possible bin sizes from 1 to $c$, we used the function `nclass.scott` to compute the number of bins using Scott's reference rule. For the DP omnibus test, we have modified the source code found in `fBasics` so that the function computes the statistic for sample sizes less than 20. For the JB test, we used the non-robust version of the test statistic, because its results followed the paper more closely than the robust version of the test. The modified DP omnibus test is shown below.
 
+```{r eval=FALSE}
 # Edited from dagoTest(x) in fBasics library. 
 omnibus.test <- function(x){
   # Internal Function for D'Agostino Normality Test:
@@ -231,7 +193,7 @@ omnibus.test <- function(x){
 
 ### Obtaining the critical values
 
-To obtain the critical values, we generate 50,000 samples from a normal distribution and compute the test statistic for each test. The 50,000 test statistics are then ordered to create an empirical distribution. The critical value then corresponds to the $\alpha$ quantile (left-tailed test) or $1-\alpha$ quantile (right-tailed test). This process is repeated for each sample size. The result is a single critical value for each test at each sample size; these critical values are shown in the table below.
+To obtain the critical values, we generated 50,000 samples from a normal distribution using the `rnorm` function and computed the test statistic for each test. The 50,000 test statistics were then ordered to create an empirical distribution. The critical value then corresponds to the $\alpha$ quantile (left-tailed test such as SW) or $1-\alpha$ quantile (right-tailed test such as LL) of the empirical distribution. This process was repeated for each sample size. The result is a single critical value for each test at each sample size; these critical values are shown in the table below.
 
 ```{r eval=FALSE}
 alpha <- 0.05
@@ -301,7 +263,9 @@ kable(x,"pipe", caption="Critical Value Matrix")
 
 ### Evaluating the Power of each distribution
 
-To calculate the power of each test given the distribution, we wrote a function called `getpower`. The function takes as inputs the theoretical mean and variance of the distribution, the r function used to generate a sample from the distribution, and any additional parameters that the generation function requires, such as $\alpha$ and $\beta$ for the weibull distribution. The theoretical mean and variance are required for the KS test, since we standardize the data prior to passing it to the KS test function.
+To calculate the power of each test given the distribution, we wrote a function called `getpower`. The function takes as inputs the theoretical mean and variance of the distribution, the r function used to generate a sample from the distribution, and any additional parameters that the generation function requires, such as $\alpha$ and $\beta$ for the weibull distribution. The theoretical mean and variance are required for the KS test, since we standardize the data prior to passing it to the KS test function. 
+
+We begin by generating 10,000 simulated samples from the given distribution, using the functions that are discussed in the Introduction section above. Next, for each sample we calculated the eight test statistics. Then, we compared the test statistic value with the critical value for the given test. For the SW test, we evaluated whether the statistic was less than or equal to the critical value. For all other tests, we evaluated whether the statistic was greater than or equal to the critical value (with the exception of the KS test for which we used the two-tail method). We then assigned a 1 or 0 based on the result of the test. The power of the normality test was then computed by summing the vector of 1s and 0s and dividing by the number of samples (10,000). In this way, the power of the normality test for a particular sample size is the proportion of samples for which the test rejected the null hypothesis of normality. This process was repeated for each sample size. The function is shown below.
 
 ```{r eval=FALSE}
 # Power Function - Found in powerfunction.r
@@ -920,62 +884,7 @@ byType <- data.frame(Test, long_tail, short_tail, asymptotic)
 kable(byType, "pipe")
 ```
 
-
-
-```{r}
-### Symmetric Short-tailed Distributions
-# Used in Table-2:
-# 1. Uniform: U(0,1): 
-# 2. Tukey(0,1,1.25,1.25): 
-# 3. Trunc(−2,2):
-
-# Used in Figure-1:
-# 1. GLD(0,1,0.75,0.75)
-# 2. GLD(0,1,0.5,0.5)
-# 3. GLD(0,1,0.25,0.25)
-
-
-### Symmetric long-tailed distributions:
-## Used in figure-2:
-## 1. GLD(0,1,−0.10,−0.10)
-## 2. GLD(0,1,−0.15,−0.15)
-# 3. Scale Contaminated Normal: ScConN(0.05,3)
-
-# Used in Table-3:
-# 1. t(15)
-# 2. Logistic
-# 3. Laplace
-
-
-### Asymmetric distributions:
-
-## Used in Figure-3:
-## 1. CSQ(4)
-## 2. Beta(2,1)
-
-## Used in Table-4:
-## 1. Weibull(3,1)
-## 2. Lognormal
-## 3. Location Contaminated Normal: LoConN(0.2,3) 
-
-
-### 4) Talk about the power of each test and how it is defined 
-
-## Section-2: Results
-  ## Grabbing critical values
-  ## Writing the code for the tests
-    ## Specify difficulties with the tests and any changes made.
-  ## Introduce by order in the paper (the table/figures) and then comment on        the difficulties associated with each test and distribution. 
-      ## Make a comment on anything that did not match.
-  ## Summarize the results of the paper
-  
-## Section-3: Summary
-  ## Talk about our own insights, whether we agree with the paper's conclusion,   and the highlights of what we learned while trying to replicate the results o   of the paper. 
-## Section-4: Future Work
-  ## Discuss how this could apply to future work, both in industry and academia.
-```
-
-# Section 4: Summary
+# Section 3: Summary
 
 
 
@@ -989,16 +898,27 @@ Rizzo, Maria L. Statistical computing with R. CRC Press, 2019.
 
 Packages:
 
-R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
-URL https://www.R-project.org/.
-
 Diethelm Wuertz, Tobias Setz and Yohan Chalabi (2020). fBasics: Rmetrics - Markets and Basic Statistics. R package version 3042.89.1.
 https://CRAN.R-project.org/package=fBasics
 
-Juergen Gross and Uwe Ligges (2015). nortest: Tests for Normality. R package version 1.0-4. https://CRAN.R-project.org/package=nortest
+H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R package version 1.0.6.
+https://CRAN.R-project.org/package=dplyr
+
+Hao Zhu (2021). kableExtra: Construct Complex Table with 'kable' and Pipe Syntax. R package version 1.3.4. 
+https://CRAN.R-project.org/package=kableExtra
 
 Joseph L. Gastwirth, Yulia R. Gel, W. L. Wallace Hui, Vyacheslav Lyubchich, Weiwen Miao and Kimihiro Noguchi (2020). lawstat: Tools for Biostatistics, Public Policy, and Law. R package version 3.4.
 https://CRAN.R-project.org/package=lawstat
+
+Juergen Gross and Uwe Ligges (2015). nortest: Tests for Normality. R package version 1.0-4. https://CRAN.R-project.org/package=nortest
+
+Olaf Mersmann, Heike Trautmann, Detlef Steuer and Björn Bornkamp (2018). truncnorm: Truncated Normal Distribution. R package version 1.0-8. 
+https://CRAN.R-project.org/package=truncnorm
+
+R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
+URL https://www.R-project.org/.
 
 Robert King, Benjamin Dean, Sigbert Klinke and Paul van Staden (2021). gld: Estimation and Use of the Generalised (Tukey) Lambda Distribution. R package version 2.6.3.
 https://CRAN.R-project.org/package=gld
@@ -1007,32 +927,8 @@ Thomas W. Yee (2015). Vector Generalized Linear and Additive Models: With an Imp
 
 Thomas W. Yee and C. J. Wild (1996). Vector Generalized Additive Models. Journal of Royal Statistical Society, Series B, 58(3), 481-493.
 
-Olaf Mersmann, Heike Trautmann, Detlef Steuer and Björn Bornkamp (2018). truncnorm: Truncated Normal Distribution. R package version 1.0-8. 
-https://CRAN.R-project.org/package=truncnorm
-
-H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
-
-Hao Zhu (2021). kableExtra: Construct Complex Table with 'kable' and Pipe Syntax. R package version 1.3.4. 
-https://CRAN.R-project.org/package=kableExtra
-
 Yihui Xie (2021). knitr: A General-Purpose Package for Dynamic Report Generation in R. R package version 1.33.
 
 Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and Hall/CRC. ISBN 978-1498716963
 
 Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
-
-
-```{r}
-citation(package = "stats")
-citation(package = "fBasics")
-citation(package = "nortest")
-citation(package = "lawstat")
-citation(package = "gld")
-citation(package = "VGAM")
-citation(package = "truncnorm")
-citation(package="grDevices")
-```
-
-
-# Appendix
-
