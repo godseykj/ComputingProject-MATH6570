@@ -27,7 +27,7 @@ library(dplyr)
 
 # Section 1: Introduction
   
-Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests. This report defers to "*Comparisons of various types of normality tests*" for the theory behind each test, while listing what aspect of normality each test assesses below.
+Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests. This report defers to "*Comparisons of various types of normality tests*" for the theory behind each test, while listing what aspect of normality each test assesses below. For every function that was used to run the tests, we compared both the source code and theory of the test to that of the paper's to confirm it was the appropriate test to run. 
   
 ## Tests
 
@@ -531,12 +531,17 @@ This is an example of the graph produced for the GLD (0, 1, 0.75, 0.75) distribu
 
 ### Approval Matrix / Error Analysis
 
+For Error Analysis, first remember how the power of each function was calculated. Let $Y$ be a random variable such that $Y=1$ when a test statistic is rejected and $Y=0$ when the test statistic is not rejected. Then, we have a Bernoulli trial-  but this experiment ran 10000 times, so really it is a Binomial distribution. Thus, there is some "success" probability $\hat{p}$ with our trials. This probability is conveniently already calculated- it is the power of the tests. Thus, an interval that was 3 standard errors large was made for each value in every table in Yap's paper, and the experimental data was checked to see if it fell within that interval. The choice of 3 standard errors was to ensure that every reasonable value was caught, anything further away and the argument that the results do not match is very strong. For the last step, a new Approval Matrix was calculated, denoting a 1 where the power successfully fell within their data, and a 0 otherwise.
+
+
+In the code below, a function was not written to do this, as there were few distributions with tables. The data was just copied and pasted into R and then replaced to be a matrix titled "Theory". If we had their values for every distribution in tables, it probably would have saved a lot of time to make a function, but it did not seem necessary in this case. After the Theory matrix has been assigned, you need to take the sample sizes used in that table as the reported sample sizes were not consistent through each table. Let $P_{ij}$ be the power in the $i^{th}$ row and $j^{th}$ column in each table, then lower bound and upper bound matrices were calculated in the form of $(P_{ij}-3 \sqrt{\frac{P_{ij}(1-P_{ij})}{10000}}, P_{ij}+3 \sqrt{\frac{P_{ij}(1-P_{ij})}{10000}})$, which can be denoted $(L_{ij}, U_{ij})$. Next, the experimental data was read into R cut down by the sample sizes that were in the paper's table. Then, an if statement was used to compare the experimental data, if it was found that $(L_{ij}<\hat{P}_{ij}< U_{ij}$, then a 1 was put $i^{th}$ row and $j^{th}$ column in the approval matrix and a 0 otherwise. 
+
 ```{r eval=FALSE}
 # Tables were made based on outputs from power function using knitr::kable. - Found in Project_Report.rmd
 
 # Error Analysis of Tabled Data.  - Example of 1 Distribution. - Found in ErrorAnalysis.r
 
-# This data was from our paper, we just switched values around for each distribution.
+# This data was from Yap's paper, we just switched values around for each distribution.
 Theory <- matrix(
   c(10, 0.1381, 0.0714, 0.1188, 0.1365, 0.1111, 0.1157, 0.1329, 0.0000,
     20, 0.2558, 0.0965, 0.217, 0.2634, 0.1448, 0.1615, 0.2559, 0.0279,
@@ -590,6 +595,7 @@ write.table(Approval, "Approval/LocConNorm.csv")
 
 ```
 
+This is an example approval matrix, ,for the Location Contaminated Normal distribution. From looking at the approval matrix, it is clear that for this distribution the KS tests and CSQ tests did not replicate the results of the paper and while the other tests missed some values, they did well otherwise. Using this method, it made it very clear to see where the experimental results matched the results in the paper and where they did not. 
 
 ```{r}
 x <- read.table("Approval/LocConNorm")
@@ -818,7 +824,7 @@ y %>%
 
 ## Graphs
   
-The following graphs were produced for visual comparison with the findings of the paper. The graphs from the paper are given on the left, while our power curves are shown on the right. There were three figures of power curves given in the paper: Figure 1, Figure 2, and Figure 3. The graphs below are grouped accordingly.
+The following graphs were produced for visual comparison with the findings of the paper. The graphs from the paper are given on the left, while our power curves are shown on the right. There were three figures of power curves given in the paper: Figure 1, Figure 2, and Figure 3. The graphs below are grouped accordingly. It was difficult to match the scale of the original graphs in the paper when using ggplot, but the way we matched their scale is by graphing the power values against the values 1 to 15, and then renaming the x-axis with the appropriate sample size. 
 
 ### Figure 1
 
@@ -860,6 +866,8 @@ knitr::include_graphics(c("GraphsFromPaper/fig3B.jpg","Figure3/fig3plotB.jpeg"))
 
 ## Error Analysis 
 
+The methodology and design of the approval matrices was discussed above. Using this, an approval percentage (or rating) can be calculated, below they are in decimal form. The first table displays the approval of each distribution with and without the CSQ test. We deviated from the Yap's calculation of the CSQ test statistic, so it was expected that the CSQ powers did not match the paper's. This shows that across all distributions, our replication accuracy was much higher excluding the CSQ test. Furthermore, on multiple occasions we replicated the values in their paper to a high percentage for each test, noting that the asymptotic distributions (Weibull and Lognormal) had lower approval ratings. One last thing to note is that the Lognormal distribution had a low approval rating such that it was only approved for values near 1, meaning that no power values matched at low sample size. Whereas, the Weibull distribution had 100% approval for the Shapiro Wilks test and was hit and miss otherwise across the rest of the distributions. 
+
 ```{r echo=FALSE}
 Distribution <- c("Uniform(0,1)", "GLD(0,1,1.25,1.25)","Trunc(-2,2)","t(15)","Logistic","Laplace","Weibull","Lognormal","LoConN(0.2,3)")
 woCSQ <- c(0.9365, 0.9365, 0.9047, 0.9365, 0.8254, 0.9365, 0.4127, 0.3810, 0.7937)
@@ -867,7 +875,11 @@ wCSQ <- c(0.8611, 0.8875, 0.8056, 0.8333, 0.7222, 0.7639, 0.3750, 0.3611, 0.7222
 
 byDist <- data.frame(Distribution, woCSQ, wCSQ)
 kable(byDist, "pipe")
+```
 
+Next, it was of interest to know which tests were getting power values near the paper's. As expected, the CSQ was the test with the least accuracy. The rest however, all hold above an 80% approval without the Lognormal distribution, with Shapiro-Wilks and Anderson-Darling leading the way around 95% approval. The percentages across the board tanked a little bit when including the Lognormal distribution, with the exception of the CSQ test. 
+
+```{r echo=FALSE}
 Test <- c("Shapiro Wilks", "Kolmogorov Smirnov", "Lilliefors", "Anderson Darling", "Jarque Bera", "D'Agostino Pearson", "Cramer von Mises", "Chi-Squared")
 woLog <- c(0.9589, 0.7945, 0.8904, 0.9453, 0.9178, 0.7945, 0.8630, 0.1507)
 wLog <- c(0.9024, 0.7319, 0.8292, 0.8902, 0.8659, 0.7561, 0.8048, 0.1585)
@@ -875,6 +887,9 @@ wLog <- c(0.9024, 0.7319, 0.8292, 0.8902, 0.8659, 0.7561, 0.8048, 0.1585)
 byTest <- data.frame(Test, woLog, wLog)
 kable(byTest, "pipe")
 ```
+
+The paper makes a claim about how the test acts on the types of distribution (short tailed, long tailed, and asymmetric). So, the approval ratings for each type of distribution for each test was calculated. This was done with the intention of seeing if this experiment's results match the claims made. If the approval ratings are high across the board, then it is easy to say that the claims match for both their work and ours. If the approval is low, then the claims may or may not match. Here we see that our work matches their claims for the long tail and short tail tests, with extremely high approval ratings all about 0.85. Thus, the power values we found were generally close to the actual papers. For the asymptotic distributions however, the approval rating is across the board with a high of 0.7778 and a low of 0.2963 excluding the CSQ test.
+
 
 ```{r echo=FALSE}
 long_tail <- c(0.8519, 0.8889, 0.8148, 0.9630, 0.8889, 0.9260, 0.9630, 0.0370)
@@ -886,7 +901,9 @@ kable(byType, "pipe")
 
 # Section 3: Summary
 
+Overall, this project successfully replicate the power values for a large portion of the papers work that was shown. That said, the paper didn't provide many values to compare to in comparison to how many were calculated. It would have been nice to compare the values for the distributions in the graphs as well as for more sample sizes. The authors of the original work chose the values where the most interesting jumps happened, but it would be interesting to see our work compared on a grander scale to all the work the paper claimed; there were a few tests and distributions mentioned but not included in the paper as well. 
 
+Our results do match the results of the paper for the short tail and long tailed distributions. This is seen by the approval ratings for the short tail and long tailed distributions being high. As for the asymptotic distributions, the approval rating was low but when looking at the graphs and tables for those distributions, it is clear that what the paper claimed still holds true. For the symmetric short tailed distributions,the best tests were Shapiro Wilks and D'Agostino pearson and for the symmetric long tailed distributions the best tests were Shapiro Wilks, D'Agostino Pearson, and Jarque-Bera. Finally, the most powerful distribution for the asymptotic distributions was the Shapiro Wilks test. This implies that the Shapiro Wilks test is the most robust test in the sense that it is the most consistent regardless of the distribution. 
 
 # References
 
