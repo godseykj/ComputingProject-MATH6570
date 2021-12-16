@@ -262,9 +262,18 @@ div.tocify {
 </div>
 
 
+<style type="text/css">
+.main-container {
+  max-width: 2400px;
+  margin-left: 0;
+  margin-right: 10%;
+}
+</style>
 <div id="section-1-introduction" class="section level1">
 <h1>Section 1: Introduction</h1>
 <p>Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests. This report defers to “<em>Comparisons of various types of normality tests</em>” for the theory behind each test, while listing what aspect of normality each test assesses below. For every function that was used to run the tests, we compared both the source code and theory of the test to that of the paper’s to confirm it was the appropriate test to run.</p>
+<p>All the code found in this report can be viewed in the public GitHub repository found at this link: <a href="https://github.com/godseykj/ComputingProject-MATH6570" class="uri">https://github.com/godseykj/ComputingProject-MATH6570</a></p>
+<p>Additionally, most of the major code chunks include references to the corresponding GitHub files.</p>
 <div id="tests" class="section level2">
 <h2>Tests</h2>
 <ol style="list-style-type: decimal">
@@ -1257,7 +1266,7 @@ sizes &lt;- x$n
 y &lt;- read.table(&quot;Table2/t2-uniform.csv&quot;)
 colnames(y) &lt;- titles
 y &lt;- y[y$n %in% sizes,]</code></pre>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table style="width:30%; font-size: 12px; width: auto !important; float: left; margin-right: 10px;" class="table">
 <caption style="font-size: initial !important;">
 Uniform(0,1) from Paper
 </caption>
@@ -1556,7 +1565,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table style="width:30%; font-size: 12px; width: auto !important; float: right; margin-left: 10px;" class="table">
 <caption style="font-size: initial !important;">
 Uniform(0,1) from Our Project
 </caption>
@@ -1855,7 +1864,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 GLD(0, 1, 1.25, 1.25) from Paper
 </caption>
@@ -2183,7 +2192,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 GLD(0, 1, 1.25, 1.25) from Our Project
 </caption>
@@ -2511,7 +2520,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 TRUNC(-2,2) from Paper
 </caption>
@@ -2810,7 +2819,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 TRUNC(-2,2) from Our Project
 </caption>
@@ -3112,7 +3121,7 @@ CSQ
 </div>
 <div id="table-3" class="section level3">
 <h3>Table 3</h3>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 t(15) from Paper
 </caption>
@@ -3411,7 +3420,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 t(15) from Our Project
 </caption>
@@ -3710,7 +3719,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 Logistic from Paper
 </caption>
@@ -4009,7 +4018,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 Logistic from Our Project
 </caption>
@@ -4308,7 +4317,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 Laplace from Paper
 </caption>
@@ -4607,7 +4616,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 Laplace from Our Project
 </caption>
@@ -4909,7 +4918,7 @@ CSQ
 </div>
 <div id="table-4" class="section level3">
 <h3>Table 4</h3>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 Weibull from Paper
 </caption>
@@ -5208,7 +5217,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 Weibull from Our Project
 </caption>
@@ -5507,7 +5516,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 Lognormal from Paper
 </caption>
@@ -5806,7 +5815,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 Lognormal from Our Project
 </caption>
@@ -6105,7 +6114,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table" style="font-size: 12px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 LoConN(0.2, 3) from Paper
 </caption>
@@ -6404,7 +6413,7 @@ CSQ
 </tr>
 </tbody>
 </table>
-<table class="table" style="font-size: 10px; width: auto !important; margin-right: 0; margin-left: auto">
+<table class="table" style="font-size: 12px; width: auto !important; margin-right: 0; margin-left: auto">
 <caption style="font-size: initial !important;">
 LoConN(0.2, 3) from Our Project
 </caption>
@@ -6902,7 +6911,7 @@ CSQ
 </div>
 <div id="section-3-summary" class="section level1">
 <h1>Section 3: Summary</h1>
-<p>Overall, this project successfully replicate the power values for a large portion of the papers work that was shown. That said, the paper didn’t provide many values to compare to in comparison to how many were calculated. It would have been nice to compare the values for the distributions in the graphs as well as for more sample sizes. The authors of the original work chose the values where the most interesting jumps happened, but it would be interesting to see our work compared on a grander scale to all the work the paper claimed; there were a few tests and distributions mentioned but not included in the paper as well.</p>
+<p>Overall, this project successfully replicated the power values for a large portion of the paper’s work that was shown. That said, the paper didn’t provide many values to compare to in comparison to how many were calculated. It would have been nice to compare the values for the distributions in the graphs as well as for more sample sizes. The authors of the original work chose the values where the most interesting jumps happened, but it would be interesting to see our work compared on a grander scale to all the work the paper claimed; there were a few tests and distributions mentioned but not included in the paper as well.</p>
 <p>Our results do match the results of the paper for the short tail and long tailed distributions. This is seen by the approval ratings for the short tail and long tailed distributions being high. As for the asymptotic distributions, the approval rating was low but when looking at the graphs and tables for those distributions, it is clear that what the paper claimed still holds true. For the symmetric short tailed distributions,the best tests were Shapiro Wilks and D’Agostino pearson and for the symmetric long tailed distributions the best tests were Shapiro Wilks, D’Agostino Pearson, and Jarque-Bera. Finally, the most powerful distribution for the asymptotic distributions was the Shapiro Wilks test. This implies that the Shapiro Wilks test is the most robust test in the sense that it is the most consistent regardless of the distribution.</p>
 </div>
 <div id="references" class="section level1">

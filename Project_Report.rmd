@@ -12,6 +12,18 @@ output:
     toc: yes
 ---
 
+<style type="text/css">
+.main-container {
+  max-width: 2400px;
+  margin-left: 0;
+  margin-right: 10%;
+}
+</style>
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width = 10000)
+```
+
 ```{r include=FALSE}
 library(nortest)
 library(lawstat)
@@ -28,6 +40,10 @@ library(dplyr)
 # Section 1: Introduction
   
 Normal distributions are most common distributions used in statistical theory and applications. Performing statistical analysis using parametric methods, validation of the normality assumption must need to be checked. Graphical methods like histogram, Q-Q plot or box plot can be used to check that assumption. Due to subjective nature of these methods, they do not provide the formal conclusive evidence about normality assumption. Formal normality tests come to handy and can be reliable for validating normality assumption. There are a significant number of tests of normality available. But, they are created under certain conditions or assumptions.This paper did the comparison of 8 selected normality tests based on Type I error rate and power of these tests. This report defers to "*Comparisons of various types of normality tests*" for the theory behind each test, while listing what aspect of normality each test assesses below. For every function that was used to run the tests, we compared both the source code and theory of the test to that of the paper's to confirm it was the appropriate test to run. 
+
+All the code found in this report can be viewed in the public GitHub repository found at this link: https://github.com/godseykj/ComputingProject-MATH6570
+
+Additionally, most of the major code chunks include references to the corresponding GitHub files.
   
 ## Tests
 
@@ -623,14 +639,14 @@ y <- y[y$n %in% sizes,]
 ```{r echo=FALSE}
 x[5,3] <- cell_spec(x[5,3], format="html", color="red")
 x %>%
-  kable("html", align = 'c', caption = 'Uniform(0,1) from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+  kable("html", align = 'c', caption = 'Uniform(0,1) from Paper', row.names=FALSE, escape=F, table.attr = "style='width:30%;'") %>%
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[5,3] <- cell_spec(y[5,3], format="html", color = "red") 
 y %>%
-  kable("html", align = 'c', caption = 'Uniform(0,1) from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+  kable("html", align = 'c', caption = 'Uniform(0,1) from Our Project', row.names=FALSE, escape=F, table.attr = "style='width:30%;'") %>%
+    kable_styling(full_width = F, position = "float_right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -647,13 +663,13 @@ y <- y[y$n %in% sizes,]
 x[4,4] <- cell_spec(x[4,4], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'GLD(0, 1, 1.25, 1.25) from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[4,4] <- cell_spec(y[4,4], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'GLD(0, 1, 1.25, 1.25) from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -670,13 +686,13 @@ y <- y[y$n %in% sizes,]
 x[6,6] <- cell_spec(x[6,6], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'TRUNC(-2,2) from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[6,6] <- cell_spec(y[6,6], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'TRUNC(-2,2) from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -695,13 +711,13 @@ y <- y[y$n %in% sizes,]
 x[8,3] <- cell_spec(x[8,3], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 't(15) from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[8,3] <- cell_spec(y[8,3], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 't(15) from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -718,13 +734,13 @@ y <- y[y$n %in% sizes,]
 x[4,8] <- cell_spec(x[4,8], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'Logistic from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[4,8] <- cell_spec(y[4,8], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'Logistic from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -741,13 +757,13 @@ y <- y[y$n %in% sizes,]
 x[6,6] <- cell_spec(x[6,6], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'Laplace from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[6,6] <- cell_spec(y[6,6], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'Laplace from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -766,13 +782,13 @@ y <- y[y$n %in% sizes,]
 x[1,3] <- cell_spec(x[1,3], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'Weibull from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[1,3] <- cell_spec(y[1,3], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'Weibull from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -789,13 +805,13 @@ y <- y[y$n %in% sizes,]
 x[6,2] <- cell_spec(x[6,2], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'Lognormal from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[6,2] <- cell_spec(y[6,2], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'Lognormal from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -812,13 +828,13 @@ y <- y[y$n %in% sizes,]
 x[3,4] <- cell_spec(x[3,4], format="html", color="red")
 x %>%
   kable("html", align = 'c', caption = 'LoConN(0.2, 3) from Paper', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "float_left", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "float_left", font_size=12) #%>% 
   #row_spec(5, bold=T, color="black", background="lightblue")
 
 y[3,4] <- cell_spec(y[3,4], format="html", color = "red") 
 y %>%
   kable("html", align = 'c', caption = 'LoConN(0.2, 3) from Our Project', row.names=FALSE, escape=F) %>%
-    kable_styling(full_width = F, position = "right", font_size=10) #%>% 
+    kable_styling(full_width = F, position = "right", font_size=12) #%>% 
   #row_spec(5, bold = T, color = "black", background = "lightblue")
 ```
 
@@ -901,7 +917,7 @@ kable(byType, "pipe")
 
 # Section 3: Summary
 
-Overall, this project successfully replicate the power values for a large portion of the papers work that was shown. That said, the paper didn't provide many values to compare to in comparison to how many were calculated. It would have been nice to compare the values for the distributions in the graphs as well as for more sample sizes. The authors of the original work chose the values where the most interesting jumps happened, but it would be interesting to see our work compared on a grander scale to all the work the paper claimed; there were a few tests and distributions mentioned but not included in the paper as well. 
+Overall, this project successfully replicated the power values for a large portion of the paper's work that was shown. That said, the paper didn't provide many values to compare to in comparison to how many were calculated. It would have been nice to compare the values for the distributions in the graphs as well as for more sample sizes. The authors of the original work chose the values where the most interesting jumps happened, but it would be interesting to see our work compared on a grander scale to all the work the paper claimed; there were a few tests and distributions mentioned but not included in the paper as well. 
 
 Our results do match the results of the paper for the short tail and long tailed distributions. This is seen by the approval ratings for the short tail and long tailed distributions being high. As for the asymptotic distributions, the approval rating was low but when looking at the graphs and tables for those distributions, it is clear that what the paper claimed still holds true. For the symmetric short tailed distributions,the best tests were Shapiro Wilks and D'Agostino pearson and for the symmetric long tailed distributions the best tests were Shapiro Wilks, D'Agostino Pearson, and Jarque-Bera. Finally, the most powerful distribution for the asymptotic distributions was the Shapiro Wilks test. This implies that the Shapiro Wilks test is the most robust test in the sense that it is the most consistent regardless of the distribution. 
 
