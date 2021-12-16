@@ -494,7 +494,7 @@ betapower <- getpower(betamean, betavar, "rbeta",alpha, beta)
 Next, we wrote a function to graph the power curve using `ggplot`. The function takes as input the filename of the csv file where the power matrix is saved as well as the name of the distribution as a character which will serve as the title of the graph. The color coding of the tests should align closely with the color coding found in the paper.
 
 ```{r eval=FALSE}
-# Graphing the power curves for the necessary distributions - Found in powertable.r
+# Graphing the power curves for the necessary distributions - Found in graphs.r
 
 graph <- function(filename, distribution){
   table <- read.table(filename)
